@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Permanent Establishment · Study Hub &amp; Calculator</title>
+<meta name="description" content="Comprehensive Permanent Establishment study tool. All 5 PE types across 12+ tax treaties, interactive calculators, landmark case law, profit attribution worksheet. Built on OECD Model, UN Model, and Indian/US treaty law.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:            #F5F1E6;
+    --bg-card:       #FBF8EE;
+    --bg-inset:      #EEE6D2;
+    --ink:           #1A1814;
+    --ink-2:         #3D372D;
+    --ink-3:         #6B6256;
+    --rule:          #C8BFA9;
+    --rule-soft:     #DCD3BD;
+
+    --primary:       #2D5238;     /* forest green */
+    --primary-tint:  #D3DDD0;
+    --primary-soft:  #E8EFE5;
+    --accent:        #A35831;     /* terracotta */
+    --accent-tint:   #EDD5C0;
+    --accent-soft:   #F7E8D8;
+    --gold:          #A87F2D;
+    --good:          #2E5C3E;
+    --warn:          #8B5A00;
+    --crit:          #6B2027;
+    --shadow:        0 1px 0 rgba(26,24,20,.04), 0 2px 8px rgba(26,24,20,.06);
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{ background:var(--bg); color:var(--ink); font-family:'Inter', -apple-system, sans-serif; font-size:14.5px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+  body::before{ content:''; position:fixed; inset:0; pointer-events:none; opacity:.35; background-image: radial-gradient(rgba(26,24,20,.05) 1px, transparent 1px), radial-gradient(rgba(26,24,20,.03) 1px, transparent 1px); background-size: 3px 3px, 7px 7px; z-index:1; }
+
+  .masthead{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:18px 28px 14px; display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; position:relative; z-index:5; background:var(--bg); }
+  .masthead h1{ font-family:'Fraunces', Georgia, serif; font-weight:700; font-size:36px; line-height:1.05; letter-spacing:-0.02em; }
+  .masthead h1 em{ font-style:italic; font-weight:500; color:var(--primary); }
+  .masthead h1 .accent{ color:var(--accent); }
+  .masthead .meta{ text-align:right; font-size:10.5px; text-transform:uppercase; letter-spacing:0.14em; color:var(--ink-3); font-weight:500; }
+  .masthead .meta strong{ color:var(--ink); font-weight:600; }
+  .editorial-mark{ font-family:'Fraunces', serif; font-style:italic; font-size:11px; color:var(--ink-3); letter-spacing:0.08em; margin-bottom:6px; }
+
+  .std-strip{ border-bottom:1px solid var(--ink); padding:8px 28px; font-size:10.5px; text-transform:uppercase; letter-spacing:0.14em; color:var(--ink-3); font-weight:500; display:flex; gap:18px; flex-wrap:wrap; background:var(--bg); position:relative; z-index:5; }
+  .std-strip a{ color:var(--ink-2); text-decoration:none; border-bottom:1px dotted var(--rule); }
+  .std-strip a:hover{ color:var(--primary); border-bottom-color:var(--primary); }
+  .std-strip span.div{ color:var(--rule); }
+
+  .tabs{ border-bottom:1px solid var(--ink); padding:0 28px; display:flex; gap:0; background:var(--bg); position:sticky; top:0; z-index:10; overflow-x:auto; }
+  .tab{ background:transparent; border:none; padding:13px 18px; font-family:'Inter', sans-serif; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-3); cursor:pointer; transition:all .15s ease; border-bottom:3px solid transparent; margin-bottom:-1px; white-space:nowrap; }
+  .tab:hover{ color:var(--ink); }
+  .tab.active{ color:var(--ink); border-bottom-color:var(--primary); }
+  .tab .badge{ background:var(--primary); color:var(--bg); padding:1px 7px; margin-left:6px; font-size:9px; border-radius:8px; }
+
+  .stage{ position:relative; z-index:2; max-width:1400px; margin:0 auto; padding:24px 28px 80px; }
+  .panel{ display:none; } .panel.active{ display:block; }
+
+  /* Section header */
+  .sec-intro{ margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid var(--rule); }
+  .sec-intro h2{ font-family:'Fraunces',serif; font-size:30px; font-weight:600; letter-spacing:-0.01em; line-height:1.1; margin-bottom:8px; }
+  .sec-intro h2 em{ font-style:italic; color:var(--primary); }
+  .sec-intro p{ color:var(--ink-3); font-size:14px; line-height:1.6; max-width:78ch; }
+
+  /* ============ TAB 1 — PE MAP ============ */
+  .pe-map{ background:var(--bg-card); border:1px solid var(--rule); padding:28px 32px 32px; box-shadow:var(--shadow); }
+  .pe-types{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin:24px 0; }
+  .pe-type{ background:var(--bg-inset); border:1px solid var(--rule); padding:18px 20px; border-left:4px solid var(--primary); cursor:pointer; transition:all .15s ease; }
+  .pe-type:hover{ background:var(--primary-soft); transform:translateY(-1px); box-shadow:0 4px 14px rgba(45,82,56,0.12); }
+  .pe-type-num{ font-family:'Fraunces',serif; font-style:italic; color:var(--primary); font-size:12px; letter-spacing:0.06em; margin-bottom:4px; font-weight:500; }
+  .pe-type h3{ font-family:'Fraunces',serif; font-size:18px; font-weight:600; color:var(--ink); margin-bottom:6px; line-height:1.2; }
+  .pe-type-art{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink-3); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.1em; }
+  .pe-type p{ color:var(--ink-2); font-size:12.5px; line-height:1.5; }
+  .pe-type .pe-threshold{ display:inline-block; background:var(--bg-card); padding:3px 9px; font-size:10.5px; font-weight:600; color:var(--accent); margin-top:10px; border:1px solid var(--rule); letter-spacing:0.06em; text-transform:uppercase; }
+
+  .hero-pillars{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; margin-top:32px; }
+  @media (max-width:880px){ .hero-pillars{ grid-template-columns:1fr; } }
+  .hero-pillar{ background:var(--bg-card); border:1px solid var(--rule); padding:18px 22px 22px; border-left:4px solid var(--primary); }
+  .hero-pillar.accent{ border-left-color:var(--accent); }
+  .hero-pillar h3{ font-family:'Fraunces',serif; font-size:17px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+  .hero-pillar p{ color:var(--ink-3); font-size:13px; line-height:1.55; }
+  .hero-pillar .pillar-num{ font-family:'Fraunces',serif; font-style:italic; color:var(--primary); font-size:11.5px; margin-bottom:4px; letter-spacing:0.06em; }
+  .hero-pillar.accent .pillar-num{ color:var(--accent); }
+
+  /* ============ TAB 2 — WIZARD ============ */
+  .wizard-stage{ background:var(--bg-card); border:1px solid var(--rule); padding:28px 32px 32px; box-shadow:var(--shadow); max-width:780px; margin:0 auto; }
+  .wizard-step{ display:none; }
+  .wizard-step.active{ display:block; }
+  .wizard-q{ font-family:'Fraunces',serif; font-size:22px; font-weight:600; line-height:1.25; margin-bottom:14px; color:var(--ink); }
+  .wizard-q em{ font-style:italic; color:var(--primary); }
+  .wizard-sub{ color:var(--ink-3); font-size:13.5px; line-height:1.55; margin-bottom:20px; }
+  .wizard-opts{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+  .wizard-opt{ background:var(--bg-inset); border:1px solid var(--rule); padding:14px 18px; cursor:pointer; transition:all .15s ease; border-left:3px solid var(--rule); display:flex; align-items:center; gap:12px; }
+  .wizard-opt:hover{ background:var(--primary-soft); border-left-color:var(--primary); }
+  .wizard-opt .opt-letter{ font-family:'Fraunces',serif; font-style:italic; color:var(--primary); font-weight:700; font-size:16px; flex-shrink:0; }
+  .wizard-opt .opt-text{ font-size:14px; color:var(--ink-2); flex:1; }
+  .wizard-opt:hover .opt-text{ color:var(--ink); }
+  .wizard-progress{ font-family:'Fraunces',serif; font-style:italic; color:var(--ink-3); font-size:11.5px; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.16em; }
+  .wizard-back{ background:transparent; border:none; color:var(--ink-3); font-size:11px; text-transform:uppercase; letter-spacing:0.12em; cursor:pointer; padding:6px 0; margin-top:14px; font-weight:600; }
+  .wizard-back:hover{ color:var(--primary); }
+  .wizard-result{ background:var(--ink); color:var(--bg); padding:24px 28px; margin-top:14px; }
+  .wizard-result h3{ font-family:'Fraunces',serif; font-size:24px; font-weight:600; color:#F1C570; margin-bottom:10px; line-height:1.2; }
+  .wizard-result .res-detail{ color:#D4CFC4; font-size:14px; line-height:1.6; margin-bottom:14px; }
+  .wizard-result .res-detail strong{ color:#F1C570; }
+  .wizard-result .res-ref{ background:#0F0E0B; padding:10px 14px; font-size:12px; color:#B0A78C; border-left:3px solid #F1C570; }
+  .wizard-result.good{ background:#1F4533; }
+  .wizard-result.warn{ background:#5C3010; }
+
+  /* ============ TAB 3 — CALCULATORS ============ */
+  .calc-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(380px, 1fr)); gap:24px; }
+  .calc-card{ background:var(--bg-card); border:1px solid var(--rule); box-shadow:var(--shadow); padding:20px 22px 22px; }
+  .calc-card .calc-card-head{ border-bottom:1px solid var(--rule); padding-bottom:12px; margin-bottom:16px; }
+  .calc-card .calc-card-num{ font-family:'Fraunces',serif; font-style:italic; color:var(--primary); font-size:11px; text-transform:uppercase; letter-spacing:0.16em; margin-bottom:4px; font-weight:500; }
+  .calc-card h3{ font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:var(--ink); line-height:1.15; margin-bottom:6px; letter-spacing:-0.01em; }
+  .calc-card .calc-desc{ font-size:12.5px; color:var(--ink-3); line-height:1.5; }
+
+  /* Form controls */
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+  .field-row.full{ grid-template-columns:1fr; }
+  .field label{ display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.12em; color:var(--ink-3); font-weight:600; margin-bottom:5px; }
+  .field label .hint{ text-transform:none; letter-spacing:0; font-weight:400; color:var(--ink-3); font-style:italic; margin-left:6px; font-size:11px; }
+  input[type="text"], input[type="number"], select{ width:100%; padding:9px 12px; background:var(--bg-card); border:1px solid var(--rule); color:var(--ink); font-family:'JetBrains Mono', monospace; font-size:14px; border-radius:0; }
+  select{ font-family:'Inter', sans-serif; cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%231A1814' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:32px; }
+  input:focus, select:focus{ outline:none; border-color:var(--primary); background:#FFF; }
+
+  .btn{ background:var(--ink); color:var(--bg); border:none; padding:10px 20px; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; cursor:pointer; transition:all .15s ease; }
+  .btn:hover{ background:var(--primary); }
+  .btn.outline{ background:transparent; color:var(--ink-2); border:1px solid var(--rule); }
+  .btn.outline:hover{ color:var(--primary); border-color:var(--primary); }
+
+  .calc-result{ background:var(--ink); color:var(--bg); padding:16px 18px; margin-top:14px; }
+  .calc-result .r-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.14em; color:#B0A78C; margin-bottom:4px; }
+  .calc-result .r-value{ font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:600; color:#F1C570; line-height:1.2; }
+  .calc-result .r-detail{ font-size:12.5px; color:#D4CFC4; margin-top:8px; line-height:1.55; }
+  .calc-result.warn{ background:var(--crit); } .calc-result.warn .r-value{ color:#FFE0CB; }
+  .calc-result.good{ background:var(--good); } .calc-result.good .r-value{ color:#D4E8D8; }
+
+  /* Checkbox list */
+  .check-list label{ display:flex; align-items:flex-start; gap:10px; padding:10px 14px; background:var(--bg-inset); cursor:pointer; margin-bottom:6px; border-left:3px solid var(--rule); transition:all .15s ease; font-size:13px; line-height:1.5; color:var(--ink-2); }
+  .check-list label:hover{ background:#E8E0CB; }
+  .check-list label.checked{ border-left-color:var(--primary); background:var(--primary-soft); color:var(--ink); }
+  .check-list input[type="checkbox"]{ margin-top:3px; accent-color:var(--primary); width:14px; height:14px; }
+
+  /* ============ TAB 4 — TREATY ATLAS ============ */
+  .atlas-table-wrap{ overflow-x:auto; }
+  .atlas-table{ width:100%; border-collapse:collapse; font-size:12.5px; background:var(--bg-card); }
+  .atlas-table th, .atlas-table td{ padding:10px 12px; border-bottom:1px solid var(--rule-soft); text-align:left; vertical-align:top; }
+  .atlas-table th{ background:var(--bg-inset); font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-3); font-weight:600; border-bottom:2px solid var(--ink); white-space:nowrap; }
+  .atlas-table td.num{ font-family:'JetBrains Mono',monospace; text-align:center; }
+  .atlas-table tr:hover td{ background:var(--bg-inset); }
+  .atlas-table .country{ font-weight:600; color:var(--ink); }
+  .atlas-table .year{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-3); }
+
+  /* ============ Tabs/Sections ============ */
+  .ref-section{ background:var(--bg-card); border:1px solid var(--rule); padding:22px 26px 26px; margin-bottom:20px; box-shadow:var(--shadow); }
+  .ref-section h2{ font-family:'Fraunces',serif; font-size:22px; font-weight:600; margin-bottom:14px; color:var(--ink); padding-bottom:8px; border-bottom:2px solid var(--rule); }
+  .ref-section h3{ font-family:'Fraunces',serif; font-size:16px; font-weight:600; color:var(--primary); margin:20px 0 10px; }
+
+  /* Case law */
+  .case-card{ background:var(--bg-inset); border:1px solid var(--rule); padding:16px 20px; margin-bottom:12px; border-left:4px solid var(--primary); }
+  .case-name{ font-family:'Fraunces',serif; font-style:italic; font-weight:600; font-size:15px; color:var(--ink); }
+  .case-cite{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-3); margin-top:3px; }
+  .case-tags{ margin-top:6px; margin-bottom:8px; }
+  .tag{ display:inline-block; background:var(--bg-card); color:var(--ink-2); padding:2px 8px; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; font-weight:500; border:1px solid var(--rule); margin-right:4px; }
+  .tag.primary{ background:var(--primary-soft); color:var(--primary); border-color:rgba(45,82,56,0.3); }
+  .tag.accent{ background:var(--accent-soft); color:var(--accent); border-color:rgba(163,88,49,0.3); }
+  .case-holding{ color:var(--ink-2); font-size:13.5px; line-height:1.6; }
+
+  /* Glossary */
+  .gloss-grid{ display:grid; grid-template-columns:200px 1fr; gap:6px 22px; }
+  @media (max-width:680px){ .gloss-grid{ grid-template-columns:1fr; } }
+  .gloss-term{ font-family:'Fraunces',serif; font-weight:600; color:var(--ink); font-size:14px; padding:8px 0; border-bottom:1px solid var(--rule-soft); }
+  .gloss-def{ color:var(--ink-2); font-size:13px; line-height:1.55; padding:8px 0; border-bottom:1px solid var(--rule-soft); }
+  .gloss-def strong{ color:var(--primary); }
+
+  /* Profit attribution */
+  .pa-stage{ background:var(--bg-card); border:1px solid var(--rule); padding:24px 28px 28px; box-shadow:var(--shadow); }
+  .pa-row{ display:grid; grid-template-columns:1fr 180px; gap:14px; padding:10px 0; border-bottom:1px solid var(--rule-soft); align-items:center; }
+  .pa-row.total{ border-top:2px solid var(--ink); border-bottom:none; font-weight:600; background:var(--bg-inset); padding:14px 12px; margin-top:8px; }
+  .pa-label{ font-size:13.5px; color:var(--ink-2); }
+  .pa-label .pa-sub{ display:block; font-size:11.5px; color:var(--ink-3); font-style:italic; margin-top:2px; }
+  .pa-input{ position:relative; }
+  .pa-input input{ font-family:'JetBrains Mono',monospace; text-align:right; padding-left:24px; }
+  .pa-input::before{ content:'$'; position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--ink-3); font-family:'JetBrains Mono',monospace; font-size:13px; pointer-events:none; z-index:1; }
+
+  /* Flashcards */
+  .flashcard-stage{ max-width:680px; margin:0 auto; }
+  .flashcard{ background:var(--bg-card); border:1px solid var(--ink); box-shadow:0 8px 24px rgba(26,24,20,0.08); padding:40px; min-height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; cursor:pointer; position:relative; user-select:none; }
+  .flashcard .fc-meta{ position:absolute; top:14px; right:18px; font-family:'Fraunces',serif; font-style:italic; color:var(--ink-3); font-size:11px; text-transform:uppercase; letter-spacing:0.14em; }
+  .flashcard .fc-side{ position:absolute; top:14px; left:18px; font-family:'Fraunces',serif; font-style:italic; color:var(--primary); font-size:11px; text-transform:uppercase; letter-spacing:0.14em; font-weight:600; }
+  .flashcard .fc-front{ font-family:'Fraunces',serif; font-size:22px; font-weight:600; color:var(--ink); line-height:1.25; }
+  .flashcard .fc-back{ font-size:15px; color:var(--ink-2); line-height:1.6; text-align:left; }
+  .flashcard .fc-back strong{ color:var(--ink); font-weight:600; }
+  .flashcard .fc-back .fc-hint{ font-family:'Fraunces',serif; font-style:italic; color:var(--ink-3); font-size:12px; margin-top:18px; display:block; text-align:center; }
+  .flashcard-controls{ display:flex; justify-content:space-between; margin-top:18px; gap:14px; }
+  .flashcard-progress{ text-align:center; margin-top:14px; font-size:11.5px; color:var(--ink-3); text-transform:uppercase; letter-spacing:0.14em; font-weight:500; }
+  .flashcard-progress .progress-bar{ height:3px; background:var(--rule); margin-top:8px; overflow:hidden; }
+  .flashcard-progress .progress-fill{ height:100%; background:var(--primary); transition:width .3s ease; }
+  .flashcard-cats{ display:flex; justify-content:center; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+  .cat-btn{ background:var(--bg-card); border:1px solid var(--rule); padding:7px 14px; font-size:11px; text-transform:uppercase; letter-spacing:0.1em; font-weight:600; cursor:pointer; color:var(--ink-2); }
+  .cat-btn:hover{ border-color:var(--primary); color:var(--primary); }
+  .cat-btn.active{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+
+  .info-callout{ background:#FFF8E8; border:1px solid #E6D5A8; border-left:4px solid var(--gold); padding:12px 16px; margin:14px 0; font-size:13px; color:var(--ink-2); line-height:1.55; }
+  .info-callout strong{ color:var(--ink); font-weight:600; }
+
+  @media print{ body::before{ display:none; } .tabs, .wizard-back{ display:none; } }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div>
+    <div class="editorial-mark">A Study Companion for International Tax · CA Final / EA / CPA</div>
+    <h1>The <em>Permanent</em> <span class="accent">Establishment</span> Hub</h1>
+  </div>
+  <div class="meta">
+    <div><strong>5 PE Types · 16 Tax Treaties · 25 Landmark Cases</strong></div>
+    <div>Built on OECD Model · UN Model · CBDT · IRS</div>
+    <div>Updated to Clifford Chance (Dec 2025)</div>
+  </div>
+</header>
+
+<div class="std-strip">
+  <span><a href="https://www.oecd.org/tax/treaties/2017-update-to-model-tax-convention.pdf" target="_blank" rel="noopener">OECD Model 2017</a></span>
+  <span class="div">·</span>
+  <span><a href="https://www.un.org/development/desa/financing/sites/www.un.org.development.desa.financing/files/2020-03/UN%20Model_2017.pdf" target="_blank" rel="noopener">UN Model 2017</a></span>
+  <span class="div">·</span>
+  <span><a href="https://www.irs.gov/pub/irs-trty/india.pdf" target="_blank" rel="noopener">India-US Treaty</a></span>
+  <span class="div">·</span>
+  <span><a href="https://www.oecd.org/tax/beps/beps-action-7-preventing-the-artificial-avoidance-of-permanent-establishment-status.pdf" target="_blank" rel="noopener">BEPS Action 7</a></span>
+  <span class="div">·</span>
+  <span><a href="https://incometaxindia.gov.in/Pages/international-taxation/dtaa.aspx" target="_blank" rel="noopener">CBDT DTAA Database</a></span>
+</div>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="map">PE Map</button>
+  <button class="tab" data-tab="wizard">PE Wizard</button>
+  <button class="tab" data-tab="calculators">Calculators<span class="badge">6</span></button>
+  <button class="tab" data-tab="atlas">Treaty Atlas<span class="badge">16</span></button>
+  <button class="tab" data-tab="attribution">Profit Attribution</button>
+  <button class="tab" data-tab="cases">Case Law<span class="badge">25</span></button>
+  <button class="tab" data-tab="glossary">Glossary</button>
+  <button class="tab" data-tab="study">Study Mode</button>
+</nav>
+
+<div class="stage">
+
+  <!-- ============ TAB 1 — PE MAP ============ -->
+  <div class="panel active" id="panel-map">
+    <div class="pe-map">
+      <div class="sec-intro">
+        <h2>The Five Faces of <em>Permanent Establishment</em></h2>
+        <p>Permanent Establishment is the <strong>threshold concept</strong> in international taxation. Without a PE in the source country, business profits of a foreign enterprise can only be taxed in its country of residence (Article 7). With a PE, the source country gets first taxing rights on profits attributable to it. The OECD Model recognises five distinct types — each with its own threshold and case-law jurisprudence.</p>
+      </div>
+
+      <div class="pe-types">
+        <div class="pe-type" onclick="switchTab('calculators')">
+          <div class="pe-type-num">Type 1 · The Default</div>
+          <h3>Fixed Place PE</h3>
+          <div class="pe-type-art">Article 5(1)–(4)</div>
+          <p>A fixed place of business through which the enterprise's business is wholly or partly carried on. Six conditions must concur: existence, location, fixity, disposal, business activity, and non-preparatory nature.</p>
+          <div class="pe-threshold">Six concurrent conditions</div>
+        </div>
+
+        <div class="pe-type" onclick="switchTab('calculators')">
+          <div class="pe-type-num">Type 2 · Time-Based</div>
+          <h3>Construction PE</h3>
+          <div class="pe-type-art">Article 5(3) · BEPS Action 7</div>
+          <p>A building site, construction, installation, or assembly project becomes a PE if it lasts beyond a treaty-specific time threshold. Anti-contract-splitting rules apply (BEPS Action 7).</p>
+          <div class="pe-threshold">6–12 months (varies by treaty)</div>
+        </div>
+
+        <div class="pe-type" onclick="switchTab('calculators')">
+          <div class="pe-type-num">Type 3 · India-Specific</div>
+          <h3>Service PE</h3>
+          <div class="pe-type-art">Article 5(2)(l) (India-style treaties)</div>
+          <p>Furnishing of services through employees or personnel in source country for &gt; threshold days in 12 months. <strong>Physical presence required</strong> (Clifford Chance, Delhi HC Dec 2025). Not in OECD Model — UN Model only.</p>
+          <div class="pe-threshold">90–183 days · Related party shorter</div>
+        </div>
+
+        <div class="pe-type" onclick="switchTab('calculators')">
+          <div class="pe-type-num">Type 4 · Personal</div>
+          <h3>Agency PE</h3>
+          <div class="pe-type-art">Article 5(5)–(6)</div>
+          <p>A dependent agent who habitually concludes contracts (or plays the principal role leading to conclusion — post-BEPS) creates a PE. Independent agents acting in ordinary course do not.</p>
+          <div class="pe-threshold">Conduct-based · No day count</div>
+        </div>
+
+        <div class="pe-type" onclick="switchTab('calculators')">
+          <div class="pe-type-num">Type 5 · Digital (India)</div>
+          <h3>Significant Economic Presence</h3>
+          <div class="pe-type-art">Sec 9(1)(i) Expl 2A · 2018</div>
+          <p>India's domestic-law concept. Not strictly a PE under treaty but creates a deemed business connection. Triggered by transactions ≥ ₹2 crore OR systematic soliciting of ≥ 3 lakh Indian users.</p>
+          <div class="pe-threshold">₹2 cr / 3 lakh users</div>
+        </div>
+      </div>
+
+      <div class="hero-pillars">
+        <div class="hero-pillar">
+          <div class="pillar-num">Pillar I · Threshold</div>
+          <h3>Source-State Taxing Right</h3>
+          <p>PE is the trigger that gives the source country the right to tax business profits. Below the threshold, residence country has exclusive rights (Article 7).</p>
+        </div>
+        <div class="hero-pillar accent">
+          <div class="pillar-num">Pillar II · Attribution</div>
+          <h3>Only PE Profits Taxed</h3>
+          <p>Even when PE exists, the source country only taxes profits attributable to that PE — calculated as if PE were a separate, independent enterprise dealing at arm's length.</p>
+        </div>
+        <div class="hero-pillar">
+          <div class="pillar-num">Pillar III · Anti-Abuse</div>
+          <h3>BEPS Tightenings</h3>
+          <p>BEPS Action 7 (2015) and the MLI (Articles 12–15) closed common avoidance routes — commissionnaire arrangements, anti-fragmentation of preparatory activities, contract-splitting on construction sites.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 2 — WIZARD ============ -->
+  <div class="panel" id="panel-wizard">
+    <div class="wizard-stage" id="wizardStage"></div>
+  </div>
+
+  <!-- ============ TAB 3 — CALCULATORS ============ -->
+  <div class="panel" id="panel-calculators">
+    <div class="calc-grid" id="calcGrid"></div>
+  </div>
+
+  <!-- ============ TAB 4 — TREATY ATLAS ============ -->
+  <div class="panel" id="panel-atlas">
+    <div class="ref-section">
+      <div class="sec-intro">
+        <h2>Treaty <em>Atlas</em></h2>
+        <p>PE thresholds vary substantially across treaties. The OECD Model uses 12 months for construction; the UN Model uses 6 months and adds a Service PE. India's treaties typically borrow from the UN Model and add a shorter related-party threshold. Use this atlas to identify the correct threshold for any cross-border engagement.</p>
+      </div>
+      <div class="atlas-table-wrap">
+        <table class="atlas-table" id="atlasTable">
+          <thead>
+            <tr>
+              <th>Treaty</th>
+              <th>Year</th>
+              <th>Construction PE</th>
+              <th>Service PE (Unrelated)</th>
+              <th>Service PE (Related)</th>
+              <th>Agency PE</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 5 — PROFIT ATTRIBUTION ============ -->
+  <div class="panel" id="panel-attribution">
+    <div class="pa-stage">
+      <div class="sec-intro">
+        <h2>Article 7 <em>Profit Attribution</em></h2>
+        <p>Once a PE exists, only profits <strong>attributable to that PE</strong> can be taxed in the source country. The OECD Authorised Approach treats the PE as a separate, independent enterprise dealing at arm's length with the head office. Below is a working worksheet for the basic AOA computation.</p>
+      </div>
+
+      <h3 style="font-family:'Fraunces',serif; font-size:18px; margin-bottom:14px; color:var(--ink);">Step 1 · PE-Specific Income &amp; Costs</h3>
+
+      <div class="pa-row">
+        <div class="pa-label">Revenue attributable to PE
+          <span class="pa-sub">Customer billings / contracts performed through PE</span>
+        </div>
+        <div class="pa-input"><input type="number" id="pa_revenue" placeholder="0" /></div>
+      </div>
+      <div class="pa-row">
+        <div class="pa-label">Direct costs incurred by PE
+          <span class="pa-sub">Local salaries, materials, rent, utilities</span>
+        </div>
+        <div class="pa-input"><input type="number" id="pa_direct" placeholder="0" /></div>
+      </div>
+      <div class="pa-row">
+        <div class="pa-label">Allocable head office expenses
+          <span class="pa-sub">Limited to 5% of adjusted total income under Sec 44C (India)</span>
+        </div>
+        <div class="pa-input"><input type="number" id="pa_ho" placeholder="0" /></div>
+      </div>
+
+      <h3 style="font-family:'Fraunces',serif; font-size:18px; margin:24px 0 14px; color:var(--ink);">Step 2 · Inter-Branch Dealings (Notional Arm's-Length)</h3>
+
+      <div class="pa-row">
+        <div class="pa-label">Notional interest on capital provided by head office
+          <span class="pa-sub">Treated as deduction in PE under OECD AOA</span>
+        </div>
+        <div class="pa-input"><input type="number" id="pa_int" placeholder="0" /></div>
+      </div>
+      <div class="pa-row">
+        <div class="pa-label">Notional royalty for IP used by PE
+          <span class="pa-sub">Allowed only under OECD AOA — restricted in India treaties</span>
+        </div>
+        <div class="pa-input"><input type="number" id="pa_royalty" placeholder="0" /></div>
+      </div>
+      <div class="pa-row">
+        <div class="pa-label">Notional services fee from head office
+          <span class="pa-sub">Cost-plus typical (5–10%)</span>
+        </div>
+        <div class="pa-input"><input type="number" id="pa_services" placeholder="0" /></div>
+      </div>
+
+      <div class="pa-row total" id="pa_total_row">
+        <div class="pa-label" style="font-weight:600; color:var(--ink); font-size:14px;">PE Taxable Profit</div>
+        <div style="font-family:'JetBrains Mono',monospace; text-align:right; font-size:18px; font-weight:600; color:var(--primary);" id="pa_total">$0</div>
+      </div>
+
+      <div class="info-callout" style="margin-top:20px;">
+        <strong>India-specific caveats:</strong> India follows the <strong>"functional and factual analysis"</strong> approach (CBDT Circular No. 6/2021), not the full OECD AOA. Notional payments for royalty/interest between head office and PE are <strong>not deductible</strong> in India (Article 7(3) of most India treaties contains express restrictions). Section 44C caps head-office expense allocation at 5% of adjusted total income. Section 44DA applies for royalty/FTS connected to a PE — 15% deemed presumptive rate.
+      </div>
+
+      <h3 style="font-family:'Fraunces',serif; font-size:18px; margin:24px 0 14px; color:var(--ink);">Step 3 · Force-of-Attraction Add-Back (India-Style Treaties)</h3>
+
+      <div class="pa-row">
+        <div class="pa-label">Profits from same/similar transactions in source country (outside PE)
+          <span class="pa-sub">Added back under Article 7(1)(b)/(c) — India-style "limited force of attraction"</span>
+        </div>
+        <div class="pa-input"><input type="number" id="pa_foa" placeholder="0" /></div>
+      </div>
+
+      <div class="pa-row total">
+        <div class="pa-label" style="font-weight:600; color:var(--ink); font-size:14px;">Total Taxable in Source State (with FOA)</div>
+        <div style="font-family:'JetBrains Mono',monospace; text-align:right; font-size:18px; font-weight:600; color:var(--accent);" id="pa_total_foa">$0</div>
+      </div>
+
+      <button class="btn" onclick="calcAttribution()" style="margin-top:18px;">Calculate Attribution</button>
+    </div>
+  </div>
+
+  <!-- ============ TAB 6 — CASE LAW ============ -->
+  <div class="panel" id="panel-cases">
+    <div class="ref-section">
+      <div class="sec-intro">
+        <h2>Landmark <em>PE Case Law</em></h2>
+        <p>Twenty-five rulings that shape how courts and tribunals actually apply Article 5. Includes Supreme Court of India, High Courts, ITAT, AAR, and foreign courts. Critical for CA Final, EA exam, and CPA international tax modules.</p>
+      </div>
+      <div id="casesContent"></div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 7 — GLOSSARY ============ -->
+  <div class="panel" id="panel-glossary">
+    <div class="ref-section">
+      <div class="sec-intro">
+        <h2>PE <em>Glossary</em></h2>
+        <p>Every term and concept that appears in a PE determination, with citations to article and rule.</p>
+      </div>
+      <div class="gloss-grid" id="glossGrid"></div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 8 — STUDY ============ -->
+  <div class="panel" id="panel-study">
+    <div class="flashcard-stage">
+      <h2 style="font-family:'Fraunces',serif; font-size:24px; text-align:center; margin-bottom:8px;">PE Flashcard Drill</h2>
+      <p style="text-align:center; color:var(--ink-3); font-size:13px; margin-bottom:20px;">Tap to flip · Arrow keys to navigate · Spacebar flips</p>
+      <div class="flashcard-cats" id="flashcardCats"></div>
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="fc-side" id="fcSide">Question</div>
+        <div class="fc-meta" id="fcMeta">— / —</div>
+        <div class="fc-front" id="fcFront">Loading…</div>
+      </div>
+      <div class="flashcard-controls">
+        <button class="btn outline" onclick="prevCard()">← Previous</button>
+        <button class="btn" onclick="flipCard()">Flip</button>
+        <button class="btn outline" onclick="nextCard()">Next →</button>
+      </div>
+      <div class="flashcard-progress">
+        <span id="fcProgress">0 / 0</span>
+        <div class="progress-bar"><div class="progress-fill" id="fcProgressFill" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ===========================================================
+   STATE + TAB SWITCHING
+   =========================================================== */
+const state = {
+  currentTab: 'map',
+  wizardStep: 'start',
+  wizardHistory: [],
+  flashcardIndex: 0,
+  flashcardCategory: 'all',
+  flashcardFlipped: false,
+};
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => switchTab(t.dataset.tab));
+});
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+  state.currentTab = tab;
+  if (tab === 'study') renderFlashcard();
+  if (tab === 'wizard') renderWizard();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ===========================================================
+   TREATY DATA (16 treaties, current as of 2026)
+   =========================================================== */
+const TREATIES = [
+  { key:'oecd', name:'OECD Model 2017', year:'2017',
+    construction:12, constructionUnit:'months',
+    serviceUnrelated:null, serviceRelated:null,
+    agencyNote:'Post-BEPS: includes "principal role" test',
+    notes:'No Service PE in main treaty; commentary discusses' },
+  { key:'un', name:'UN Model 2017', year:'2017',
+    construction:6, constructionUnit:'months',
+    serviceUnrelated:183, serviceRelated:183,
+    agencyNote:'Includes stock-of-goods rule',
+    notes:'Adds Service PE; broader than OECD; favoured by source countries' },
+  { key:'usmodel', name:'US Model 2016', year:'2016',
+    construction:12, constructionUnit:'months',
+    serviceUnrelated:null, serviceRelated:null,
+    agencyNote:'Stricter LOB clauses',
+    notes:'No Service PE; comprehensive LOB' },
+  { key:'india_us', name:'India–United States', year:'1989',
+    construction:120, constructionUnit:'days',
+    serviceUnrelated:90, serviceRelated:0,
+    agencyNote:'Dependent agent + securing-of-orders rule',
+    notes:'Service PE for related party has no day threshold' },
+  { key:'india_uk', name:'India–United Kingdom', year:'1993',
+    construction:6, constructionUnit:'months',
+    serviceUnrelated:90, serviceRelated:30,
+    agencyNote:'Includes processing arrangements',
+    notes:'Article 5(2)(j) construction; 5(2)(k) services' },
+  { key:'india_sg', name:'India–Singapore', year:'1994 (amended 2016)',
+    construction:183, constructionUnit:'days',
+    serviceUnrelated:90, serviceRelated:30,
+    agencyNote:'Post-2017 amendment: anti-fragmentation',
+    notes:'Most-used investment treaty; capital gains amended 2017' },
+  { key:'india_mu', name:'India–Mauritius', year:'1982 (amended 2016)',
+    construction:9, constructionUnit:'months',
+    serviceUnrelated:null, serviceRelated:null,
+    agencyNote:'Standard dependent-agent rule',
+    notes:'Capital gains amended 2016 protocol — phased grandfathering' },
+  { key:'india_nl', name:'India–Netherlands', year:'1988',
+    construction:6, constructionUnit:'months',
+    serviceUnrelated:null, serviceRelated:null,
+    agencyNote:'No Service PE',
+    notes:'MFN clause currently litigated (Concentrix case)' },
+  { key:'india_cn', name:'India–China', year:'1994 (amended 2018)',
+    construction:183, constructionUnit:'days',
+    serviceUnrelated:183, serviceRelated:183,
+    agencyNote:'Standard',
+    notes:'Updated 2018 protocol introduced PPT and MFN provisions' },
+  { key:'india_de', name:'India–Germany', year:'1995',
+    construction:6, constructionUnit:'months',
+    serviceUnrelated:null, serviceRelated:null,
+    agencyNote:'Standard',
+    notes:'OECD-style; no Service PE' },
+  { key:'india_jp', name:'India–Japan', year:'1989',
+    construction:6, constructionUnit:'months',
+    serviceUnrelated:null, serviceRelated:null,
+    agencyNote:'Standard',
+    notes:'OECD-style' },
+  { key:'india_ae', name:'India–UAE', year:'1992',
+    construction:9, constructionUnit:'months',
+    serviceUnrelated:90, serviceRelated:0,
+    agencyNote:'Standard',
+    notes:'Frequently used for inbound services to Gulf-based firms' },
+  { key:'india_hk', name:'India–Hong Kong', year:'2018',
+    construction:183, constructionUnit:'days',
+    serviceUnrelated:183, serviceRelated:30,
+    agencyNote:'Post-BEPS standard',
+    notes:'Newest India treaty in this list; PPT-aligned' },
+  { key:'india_au', name:'India–Australia', year:'1991',
+    construction:6, constructionUnit:'months',
+    serviceUnrelated:null, serviceRelated:null,
+    agencyNote:'Standard',
+    notes:'OECD-style; no Service PE' },
+  { key:'india_ca', name:'India–Canada', year:'1996',
+    construction:120, constructionUnit:'days',
+    serviceUnrelated:183, serviceRelated:0,
+    agencyNote:'Standard',
+    notes:'Mixed; relatively short construction threshold' },
+  { key:'us_ca', name:'US–Canada', year:'1980 (5th protocol 2007)',
+    construction:12, constructionUnit:'months',
+    serviceUnrelated:183, serviceRelated:183,
+    agencyNote:'2007 protocol added Service PE',
+    notes:'Service PE added by 5th protocol — unusual for US treaties' },
+];
+
+/* ===========================================================
+   CASE LAW DATA (25 landmark cases)
+   =========================================================== */
+const CASES = [
+  { name:'Formula One World Championship Ltd v. CIT', cite:'(2017) 394 ITR 80 (SC)', tags:['Fixed Place PE','SC India'],
+    holding:'Buddh International Circuit during the Indian Grand Prix held to be a Fixed Place PE of FOWC. SC applied the disposal test (control over the venue during the event) and confirmed that even a temporary location can be "fixed" if there is sufficient permanence and regularity.' },
+  { name:'ADIT v. E-Funds IT Solution Inc.', cite:'(2017) 86 taxmann.com 240 (SC)', tags:['Fixed Place PE','BPO','SC India'],
+    holding:'Captive BPO subsidiary in India does NOT create a Fixed Place or Agency PE for US parent merely by sharing premises/employees. Subsidiary remained independently controlled and tax-residency-determined.' },
+  { name:'DIT v. Morgan Stanley & Co.', cite:'(2007) 292 ITR 416 (SC)', tags:['Service PE','Transfer Pricing','SC India'],
+    holding:'Where Indian captive bears its own risks and is compensated at arm\'s length, no further profit attribution to the foreign PE is required even where Service PE technically exists. Foundational ruling for captive BPO/ITES industry.' },
+  { name:'CIT v. Clifford Chance Pte Ltd.', cite:'(2025) 181 taxmann.com 254 (Delhi HC)', tags:['Service PE','India-SG','Delhi HC'],
+    holding:'Delhi HC (Dec 2025): Service PE under India-Singapore DTAA requires PHYSICAL presence of employees — there is no virtual Service PE. Only service-rendering days count toward 90-day threshold; vacation, business development and remote days excluded.' },
+  { name:'ADIT v. Samsung Heavy Industries Co. Ltd.', cite:'(2020) 273 Taxman 510 (SC)', tags:['Construction PE','Project Office','SC India'],
+    holding:'Project office in Mumbai held NOT to be a Fixed Place PE for the offshore segment of an offshore-onshore project. Profits attributable to PE limited to actual functions performed in India.' },
+  { name:'Centrica India Offshore Pvt Ltd v. CIT', cite:'(2014) 364 ITR 336 (Delhi HC)', tags:['Service PE','Secondment','Delhi HC'],
+    holding:'Secondees from UK parent to Indian subsidiary, with parent retaining real-employer control, created a Service PE of the parent. Reimbursement of salaries was FTS in nature.' },
+  { name:'DIT v. Galileo International Inc.', cite:'(2009) 180 Taxman 357 (Delhi HC)', tags:['Agency PE','Distribution','Delhi HC'],
+    holding:'CRS booking system: Indian distributor (Interglobe) held to be a dependent agent PE of Galileo. 15% of revenue attributed to PE as ALP.' },
+  { name:'UAE Exchange Centre Ltd v. UoI', cite:'(2009) 313 ITR 94 (Delhi HC) / (2020) 425 ITR 30 (SC)', tags:['Fixed Place PE','Liaison Office'],
+    holding:'Liaison offices in India of UAE Exchange involved in collecting payment instructions held NOT to be PE — held to be preparatory/auxiliary. SC upheld in 2020.' },
+  { name:'Western Union Financial Services Inc.', cite:'(2007) 104 ITD 34 (Delhi ITAT)', tags:['Agency PE','Money Transfer'],
+    holding:'Indian post offices and banks acting as Western Union agents were NOT dependent agent PE — were independent agents acting in the ordinary course of their business.' },
+  { name:'Rolls Royce Plc v. DIT', cite:'(2011) 339 ITR 147 (Delhi HC)', tags:['Fixed Place PE','Liaison Office','Delhi HC'],
+    holding:'Rolls Royce liaison office in India held to be a Fixed Place PE — went beyond preparatory/auxiliary by negotiating with customers. 35% of profits attributed to Indian operations.' },
+  { name:'DIT v. Nimbus Sport International Pte Ltd', cite:'(2012) 18 taxmann.com 308 (Delhi HC)', tags:['Service PE','Broadcasting'],
+    holding:'Crew filming cricket matches for Nimbus in India for less than 90 days did not constitute a Service PE under India-Singapore treaty.' },
+  { name:'EPCOS Ferrites Ltd v. DCIT', cite:'(2009) 31 SOT 26 (Kolkata ITAT)', tags:['Construction PE'],
+    holding:'Erection and commissioning project under India-Germany treaty exceeding 6 months created Construction PE.' },
+  { name:'GE Energy Parts Inc v. CIT', cite:'(2019) 411 ITR 243 (Delhi HC)', tags:['Fixed Place PE','Agency PE','Delhi HC'],
+    holding:'GE\'s liaison office and Indian subsidiary collectively created a Fixed Place PE — substantial business activity by expats. 26% profit attribution upheld.' },
+  { name:'AAR in re Brown & Sharpe Inc', cite:'(2014) 369 ITR 704 (AAR)', tags:['Liaison Office','AAR'],
+    holding:'Liaison office monitoring quality and conducting market research was preparatory/auxiliary — no PE.' },
+  { name:'CIT v. Steel Authority of India (SAIL)', cite:'(2018) 257 Taxman 41 (SC)', tags:['Construction PE','SC India'],
+    holding:'Foreign contractor on SAIL plant project — held PE because project exceeded threshold. Article 7 attribution applied.' },
+  { name:'Mastech Inc v. DCIT', cite:'(2007) 12 SOT 426 (Mumbai ITAT)', tags:['Service PE','Related Party'],
+    holding:'US company providing IT services to its Indian subsidiary held to have a Service PE — related party services trigger lower threshold under India-US Treaty Article 5(2)(l).' },
+  { name:'Renoir Consulting Ltd v. DDIT', cite:'(2014) AAR 1118 of 2011', tags:['Service PE','AAR','Consulting'],
+    holding:'Consultancy days for Indian client aggregated across personnel — 145 days exceeded 90-day threshold under India-Mauritius treaty.' },
+  { name:'Linklaters LLP v. ITO', cite:'(2010) 132 TTJ 20 (Mum ITAT)', tags:['Service PE','LLP'],
+    holding:'UK LLP held to qualify for treaty benefits AND have Service PE due to 90+ days of UK partner presence in India.' },
+  { name:'eBay International AG v. ADIT', cite:'(2012) 25 taxmann.com 500 (Mum ITAT)', tags:['Agency PE','Digital','Mumbai ITAT'],
+    holding:'eBay India was held to be a marketing service provider, not a dependent agent — no Agency PE for eBay International AG.' },
+  { name:'AAR in re Convergys Customer Mgmt Group', cite:'(2013) 350 ITR 196 (AAR)', tags:['Service PE','BPO'],
+    holding:'US parent had Service PE due to extended employee presence in India coordinating with subsidiary on customer projects.' },
+  { name:'DIT v. LG Cable Ltd', cite:'(2011) 197 Taxman 100 (Delhi HC)', tags:['Construction PE','Korea'],
+    holding:'Offshore supply contract — held that India did not have right to tax offshore supplies where title passed outside India even if Construction PE existed for onshore portion.' },
+  { name:'Sumitomo Mitsui Banking Corp v. DDIT', cite:'(2012) 145 TTJ 649 (Mum ITAT)', tags:['Fixed Place PE','Banking'],
+    holding:'Branch of foreign bank held to be Fixed Place PE — but distinguished from "head office" expenses subject to Section 44C cap.' },
+  { name:'CIT v. Hyundai Heavy Industries Co Ltd', cite:'(2007) 291 ITR 482 (SC)', tags:['Construction PE','Offshore','SC India'],
+    holding:'Korea-based contractor on ONGC project — held that profits from offshore supply (outside Indian territorial waters) were NOT attributable to Indian PE; only onshore activities taxable.' },
+  { name:'Citizen Watch Co. Ltd. (AAR)', cite:'(2003) 263 ITR 644 (AAR)', tags:['Agency PE','Distribution'],
+    holding:'Indian distributor (HMT) was independent and dealt at arm\'s length — no Agency PE for Citizen Watch.' },
+  { name:'AAR in re Bharti AXA General Insurance', cite:'(2010) 326 ITR 477 (AAR)', tags:['Service PE','Insurance'],
+    holding:'Reinsurance technical services from foreign reinsurer — limited days in India did not exceed Service PE threshold under India-France treaty.' },
+];
+
+/* ===========================================================
+   GLOSSARY DATA
+   =========================================================== */
+const GLOSSARY = [
+  ['Permanent Establishment','A <strong>fixed place of business</strong> through which the business of an enterprise is wholly or partly carried on (Article 5(1)). The threshold below which source-country taxation of business profits is barred.'],
+  ['Fixed Place','Two dimensions: (i) geographic — a defined location, and (ii) temporal — sufficient permanence (typically 6+ months). A traveling salesperson with no base does not have a "fixed" place.'],
+  ['At Disposal','The place of business must be at the disposal of the enterprise. Routine use of a customer\'s premises for visits is not "at disposal"; dedicated space, even shared, can be.'],
+  ['Preparatory or Auxiliary','Activities listed in Article 5(4) — storage, display, purchase of goods, info collection, advertising — that DO NOT create a PE even at a fixed place. Post-BEPS: must actually be preparatory in the context of the enterprise\'s core activity.'],
+  ['Anti-Fragmentation','BEPS Action 7 / MLI Article 13 — prevents enterprises from splitting cohesive operations across related entities to fit each fragment within the preparatory/auxiliary exception.'],
+  ['Construction PE','Building site, construction, installation, or assembly project that lasts beyond a treaty-specific threshold (6 months in UN Model, 12 months in OECD Model). Anti-contract-splitting rules apply.'],
+  ['Service PE','Furnishing of services in source country for &gt;threshold days. UN Model has it; OECD Model does not (though commentary discusses). Most India treaties include it.'],
+  ['Agency PE','Triggered by a dependent agent who habitually concludes contracts (pre-BEPS) or plays the principal role leading to conclusion (post-BEPS) in the name of the enterprise.'],
+  ['Independent Agent','An agent acting in the ordinary course of its own business does NOT create a PE — but post-BEPS, "closely related" agents are excluded from this safe harbour.'],
+  ['Habitually','More than occasionally; requires a frequency and regularity reflecting an ongoing presence. A one-off contract conclusion does not create Agency PE.'],
+  ['Limited Force of Attraction','India-style provision (Article 7(1)(b)/(c) of most India treaties): once PE exists, the source country can tax NOT ONLY PE profits but also same/similar transactions in source country outside the PE. Stricter than OECD Model.'],
+  ['Full Force of Attraction','Older UN Model approach: ALL profits of the foreign enterprise from the source country, even unrelated to PE, become taxable. Now rare.'],
+  ['Significant Economic Presence (SEP)','India\'s domestic concept under Section 9(1)(i) Explanation 2A. Not a treaty PE but creates a deemed business connection where: (i) transactions with India ≥ ₹2 crore, or (ii) systematic and continuous soliciting of ≥ 3 lakh Indian users.'],
+  ['Equalisation Levy','India\'s digital tax under Section 165/165A. 6% on online advertisement payments to non-residents; previously 2% on e-commerce supply (abolished w.e.f. 1 Aug 2024). Alternative to PE-based taxation for digital activities.'],
+  ['Business Connection','Section 9(1)(i) of IT Act — broader concept than PE; can trigger Indian tax even where treaty PE does not exist. Where treaty applies, PE definition governs.'],
+  ['Place of Effective Management (POEM)','Determines company tax residence — where key management and commercial decisions are taken. Section 6(3) defines for Indian Companies Act.'],
+  ['Attribution','Process of determining what profits are taxable in the PE jurisdiction (Article 7). OECD Authorised Approach (AOA): PE as separate independent enterprise.'],
+  ['Section 44C','India IT Act provision capping head-office expense allocation to Indian PE at 5% of adjusted total income. Treaty-based attribution often overrides.'],
+  ['Section 44DA','India IT Act — Royalty/FTS received by NR through PE in India taxed on presumptive basis at 15% of gross receipts.'],
+  ['Section 44BB','India IT Act — Presumptive taxation at 10% of gross receipts for non-residents providing services or facilities in oil/gas exploration.'],
+  ['Article 7(3) Restriction','Most Indian treaties expressly disallow notional payments (royalty, interest, services) between head office and PE. Differs from OECD AOA which permits these.'],
+  ['MLI','Multilateral Instrument (2016) — modifies bilateral treaties simultaneously. Articles 12–15 deal with PE: commissionnaire (12), specific activity exceptions (13), contract-splitting (14), closely related person (15).'],
+  ['Closely Related Person','Post-BEPS / MLI Article 15: holding >50% of beneficial interest, or one person holding >50% in both. Eliminates "independent agent" safe harbour for related parties.'],
+  ['Principal Purpose Test (PPT)','BEPS Action 6 / MLI Article 7 — treaty benefits denied if one of the principal purposes of an arrangement was to obtain those benefits.'],
+  ['Subsidiary Independence','Article 5(7) — a subsidiary is not, by itself, a PE of its parent. But shared premises, joint employees, or contracts negotiated through subsidiary can still create PE on facts.'],
+  ['Commissionnaire Arrangement','Civil-law structure where local agent acts in own name but on behalf of principal. Pre-BEPS could avoid Agency PE; MLI Article 12 closed this.'],
+  ['Sub-PE','A PE may itself have its own PE in a third country. Allocates profits accordingly.'],
+  ['MAP','Mutual Agreement Procedure (Article 25 / 27) — diplomatic dispute resolution for PE attribution disputes between competent authorities.'],
+  ['Saving Clause','US treaty feature allowing US to tax US citizens/residents notwithstanding treaty provisions — but generally doesn\'t override PE attribution rules.'],
+  ['Branch Profits Tax','Source-country tax on after-tax PE profits deemed repatriated. US IRC §884: 30% (often capped to 15% by treaty). India does not currently impose it.'],
+];
+
+/* ===========================================================
+   WIZARD LOGIC
+   =========================================================== */
+const WIZARD = {
+  start: {
+    q: 'Does the foreign enterprise have <em>any physical or personal presence</em> in the source country?',
+    sub: 'This includes employees, contractors, offices, sites, agents, equipment, or servers. If purely digital with no presence at all, the answer is "no."',
+    opts: [
+      { letter:'A', text:'Yes — at least some presence', next:'q_type' },
+      { letter:'B', text:'No physical presence at all (purely digital)', next:'r_digital' },
+    ]
+  },
+  q_type: {
+    q: 'What is the <em>nature</em> of the presence?',
+    sub: 'Choose the closest match. If multiple apply, run the wizard separately for each.',
+    opts: [
+      { letter:'A', text:'A fixed office, branch, factory, or other location', next:'q_fixed' },
+      { letter:'B', text:'A construction, installation, or assembly project', next:'q_construction' },
+      { letter:'C', text:'Employees rendering services on the ground', next:'q_service' },
+      { letter:'D', text:'A person acting on behalf of the enterprise', next:'q_agency' },
+      { letter:'E', text:'A subsidiary or related company', next:'q_subsidiary' },
+    ]
+  },
+  q_fixed: {
+    q: 'Is the place at the <em>disposal</em> of the enterprise, and is the activity <strong>more than preparatory or auxiliary</strong>?',
+    sub: 'Storage, purchase, display, info-gathering, or advertising alone do NOT create PE (Article 5(4)). A fully functioning office that contracts, sells, or manages does.',
+    opts: [
+      { letter:'A', text:'Yes, at disposal AND beyond preparatory/auxiliary', next:'r_fixed_pe' },
+      { letter:'B', text:'Activity is only preparatory or auxiliary', next:'r_no_pe_prep' },
+      { letter:'C', text:'Place is not at the enterprise\'s disposal', next:'r_no_pe_disposal' },
+    ]
+  },
+  q_construction: {
+    q: 'Has the project lasted <em>longer than the treaty threshold</em>?',
+    sub: 'OECD Model: 12 months. UN Model: 6 months. India-US: 120 days. India-UK/Germany: 6 months. India-Singapore: 183 days. Use the Treaty Atlas if unsure.',
+    opts: [
+      { letter:'A', text:'Yes — exceeds the treaty threshold', next:'r_construction_pe' },
+      { letter:'B', text:'No — within threshold, but contracts split across related entities', next:'q_split' },
+      { letter:'C', text:'No — under threshold and no splitting concern', next:'r_no_pe_construction' },
+    ]
+  },
+  q_split: {
+    q: 'Aggregated across related contractors, does the project exceed the threshold?',
+    sub: 'BEPS Action 14 / MLI Article 14 — splitting contracts among closely related entities is anti-avoidance; aggregate the days.',
+    opts: [
+      { letter:'A', text:'Yes — aggregate exceeds', next:'r_construction_pe' },
+      { letter:'B', text:'No — even aggregated, under threshold', next:'r_no_pe_construction' },
+    ]
+  },
+  q_service: {
+    q: 'Are services rendered to a <em>related party (associated enterprise)</em>?',
+    sub: 'Most India treaties have a lower threshold for related-party services — sometimes zero (India-US: any presence).',
+    opts: [
+      { letter:'A', text:'Yes — services to associated enterprise', next:'q_service_related' },
+      { letter:'B', text:'No — services to unrelated third party', next:'q_service_unrelated' },
+    ]
+  },
+  q_service_related: {
+    q: 'Have employees been <em>physically present</em> in source country at all?',
+    sub: 'Per Clifford Chance (Delhi HC 2025), physical presence is required — no virtual PE. For related parties, even a few days can trigger PE under India-US-style treaties.',
+    opts: [
+      { letter:'A', text:'Yes — physical presence (any days)', next:'r_service_pe_related' },
+      { letter:'B', text:'No — pure remote service delivery', next:'r_no_pe_virtual' },
+    ]
+  },
+  q_service_unrelated: {
+    q: 'Does <em>aggregate physical presence</em> of personnel exceed 90 days (or 183 in some treaties) in 12 months?',
+    sub: 'Aggregate across all personnel. Only service-rendering days count (exclude vacation, BD, common-team).',
+    opts: [
+      { letter:'A', text:'Yes — exceeds 90/183 day threshold', next:'r_service_pe_unrelated' },
+      { letter:'B', text:'No — under threshold', next:'r_no_pe_service' },
+    ]
+  },
+  q_agency: {
+    q: 'Does the agent <em>habitually conclude contracts</em> (or play the principal role leading to conclusion) in the name of the enterprise?',
+    sub: 'Post-BEPS: even routinely securing contracts without negotiating final terms can trigger Agency PE.',
+    opts: [
+      { letter:'A', text:'Yes — habitually concludes / leads conclusion', next:'q_agency_indep' },
+      { letter:'B', text:'No — only solicits or refers', next:'r_no_pe_agency_solicit' },
+    ]
+  },
+  q_agency_indep: {
+    q: 'Is the agent <em>independent</em> and acting in the <em>ordinary course</em> of its own business?',
+    sub: 'Independent agents (brokers, distributors, etc.) acting in ordinary course do not create PE. But post-BEPS, agents acting "exclusively or almost exclusively" for closely related enterprises are EXCLUDED from this safe harbour.',
+    opts: [
+      { letter:'A', text:'Yes — truly independent + ordinary course', next:'r_no_pe_indep' },
+      { letter:'B', text:'No — dependent / closely related', next:'r_agency_pe' },
+    ]
+  },
+  q_subsidiary: {
+    q: 'Does the parent <em>conduct its own business</em> through the subsidiary\'s premises or via its employees?',
+    sub: 'Article 5(7): a subsidiary alone is NOT a PE of the parent. But the subsidiary\'s premises can become a Fixed Place PE of the parent if the parent\'s business is conducted from there.',
+    opts: [
+      { letter:'A', text:'Yes — parent uses sub\'s premises for parent\'s own business', next:'r_fixed_pe' },
+      { letter:'B', text:'No — sub operates independently for its own business', next:'r_no_pe_subsidiary' },
+    ]
+  },
+
+  /* === RESULT STATES === */
+  r_fixed_pe: {
+    result: 'Fixed Place PE exists',
+    cls: 'warn',
+    detail: 'A Fixed Place PE is established under Article 5(1)–(2). The source country can tax profits attributable to this PE under Article 7. India-style treaties may also apply limited force-of-attraction to similar transactions outside the PE.',
+    ref: 'Article 5(1)–(2) · Formula One World Championship Ltd v. CIT (SC 2017) · Rolls Royce Plc v. DIT (Delhi HC 2011)'
+  },
+  r_construction_pe: {
+    result: 'Construction PE exists',
+    cls: 'warn',
+    detail: 'A Construction PE is established. Source country can tax profits attributable to the project. Offshore supplies may still escape source taxation if title passes outside source territory (Hyundai Heavy Industries).',
+    ref: 'Article 5(3) · Samsung Heavy Industries (SC 2020) · Hyundai Heavy Industries (SC 2007)'
+  },
+  r_service_pe_related: {
+    result: 'Service PE exists (related party)',
+    cls: 'warn',
+    detail: 'Most India treaties have NO day threshold for related-party services — any physical presence can trigger Service PE. Source country can tax profits attributable to services.',
+    ref: 'Article 5(2)(l) · Mastech Inc v. DCIT (ITAT 2007) · Centrica India (Delhi HC 2014)'
+  },
+  r_service_pe_unrelated: {
+    result: 'Service PE exists (unrelated)',
+    cls: 'warn',
+    detail: '90/183-day threshold exceeded. Source country can tax profits attributable to the services. Per Clifford Chance (2025), only physical-presence days count.',
+    ref: 'Article 5(2)(l) (India treaties) / Article 5(3)(b) (UN Model) · Linklaters LLP (ITAT 2010) · Clifford Chance (Delhi HC 2025)'
+  },
+  r_agency_pe: {
+    result: 'Agency PE exists',
+    cls: 'warn',
+    detail: 'A dependent agent habitually concluding (or leading conclusion of) contracts creates an Agency PE under Article 5(5). Source country can tax profits attributable to agency activities.',
+    ref: 'Article 5(5) · DIT v. Galileo International Inc. (Delhi HC 2009) · GE Energy Parts Inc (Delhi HC 2019) · MLI Article 12'
+  },
+  r_no_pe_prep: {
+    result: 'No PE — Preparatory / Auxiliary',
+    cls: 'good',
+    detail: 'Activity falls within Article 5(4) exclusions (storage, display, purchasing, info collection, advertising). No source-country taxation of business profits. Confirmed in UAE Exchange (SC 2020) and Brown & Sharpe (AAR).',
+    ref: 'Article 5(4) · UAE Exchange Centre (SC 2020) · Brown & Sharpe (AAR 2014)'
+  },
+  r_no_pe_disposal: {
+    result: 'No PE — Not at Disposal',
+    cls: 'good',
+    detail: 'Place must be at the disposal of the foreign enterprise (Article 5(1) commentary). Casual or shared use without dedicated control fails this test.',
+    ref: 'Article 5(1) commentary · OECD Para 12'
+  },
+  r_no_pe_construction: {
+    result: 'No PE — Below Construction Threshold',
+    cls: 'good',
+    detail: 'Project duration does not exceed the treaty threshold. Source country has no right to tax under Article 7.',
+    ref: 'Article 5(3) · Treaty-specific threshold'
+  },
+  r_no_pe_service: {
+    result: 'No PE — Below Service Threshold',
+    cls: 'good',
+    detail: 'Personnel presence under 90 (or 183) day threshold. No Service PE. Source country cannot tax service income.',
+    ref: 'Article 5(2)(l) — applicable treaty'
+  },
+  r_no_pe_virtual: {
+    result: 'No Service PE — Virtual Delivery',
+    cls: 'good',
+    detail: 'Per CIT v. Clifford Chance Pte Ltd. (Delhi HC, Dec 2025), virtual/remote service delivery without physical presence does NOT create a Service PE. However, watch for: (i) digital tax via Equalisation Levy in India, (ii) SEP under Section 9(1)(i) if user/revenue thresholds met.',
+    ref: 'Clifford Chance (Delhi HC 2025) · Section 9(1)(i) Expl 2A (SEP)'
+  },
+  r_no_pe_agency_solicit: {
+    result: 'No Agency PE — Solicitation Only',
+    cls: 'good',
+    detail: 'An agent who only solicits orders without authority to conclude contracts does not create Agency PE. Watch for post-BEPS "principal role" test, though — if agent\'s role is so substantial that contracts are routinely concluded without negotiation, PE may still arise (MLI Article 12).',
+    ref: 'Article 5(5) · MLI Article 12'
+  },
+  r_no_pe_indep: {
+    result: 'No PE — Independent Agent',
+    cls: 'good',
+    detail: 'An agent acting in the ordinary course of its own business is an independent agent and does not create PE (Article 5(6)). Watch for "closely related" exclusion post-BEPS — if agent acts almost exclusively for the principal, safe harbour does not apply.',
+    ref: 'Article 5(6) · MLI Article 15 · eBay International AG v. ADIT'
+  },
+  r_no_pe_subsidiary: {
+    result: 'No PE — Subsidiary Independence',
+    cls: 'good',
+    detail: 'A subsidiary that conducts its own business is not, by itself, a PE of its parent (Article 5(7)). E-Funds (SC 2017) is the leading authority. Captive operations remunerated at arm\'s length: Morgan Stanley protects against attribution.',
+    ref: 'Article 5(7) · ADIT v. E-Funds (SC 2017) · DIT v. Morgan Stanley (SC 2007)'
+  },
+  r_digital: {
+    result: 'No Treaty PE — But Watch India\'s SEP & Equalisation Levy',
+    cls: 'warn',
+    detail: 'No treaty PE without physical or personal presence. However, India\'s domestic provisions still apply: (1) <strong>SEP</strong> under Section 9(1)(i) Expl 2A if revenue ≥ ₹2 crore OR ≥ 3 lakh Indian users; (2) <strong>Equalisation Levy</strong> 6% on online ad payments to non-residents. These are NOT subject to treaty override in some interpretations.',
+    ref: 'Section 9(1)(i) Explanation 2A · Section 165/165A IT Act · Finance Act 2018, 2020'
+  },
+};
+
+function renderWizard() {
+  const node = WIZARD[state.wizardStep];
+  const stage = document.getElementById('wizardStage');
+
+  if (node.result) {
+    // Result state
+    stage.innerHTML = `
+      <div class="wizard-progress">Result · Step ${state.wizardHistory.length + 1}</div>
+      <div class="wizard-result ${node.cls}">
+        <h3>${node.result}</h3>
+        <div class="res-detail">${node.detail}</div>
+        <div class="res-ref"><strong>Reference:</strong> ${node.ref}</div>
+      </div>
+      <button class="wizard-back" onclick="wizardReset()">← Start over</button>
+      ${state.wizardHistory.length ? '<button class="wizard-back" onclick="wizardBack()">← Back one step</button>' : ''}
+    `;
+    return;
+  }
+
+  // Question state
+  stage.innerHTML = `
+    <div class="wizard-progress">PE Determination Wizard · Step ${state.wizardHistory.length + 1}</div>
+    <div class="wizard-q">${node.q}</div>
+    <div class="wizard-sub">${node.sub}</div>
+    <div class="wizard-opts">
+      ${node.opts.map(o => `
+        <div class="wizard-opt" onclick="wizardGo('${o.next}')">
+          <span class="opt-letter">${o.letter}</span>
+          <span class="opt-text">${o.text}</span>
+        </div>
+      `).join('')}
+    </div>
+    ${state.wizardHistory.length ? '<button class="wizard-back" onclick="wizardBack()">← Back one step</button>' : ''}
+  `;
+}
+
+function wizardGo(nextStep) {
+  state.wizardHistory.push(state.wizardStep);
+  state.wizardStep = nextStep;
+  renderWizard();
+}
+function wizardBack() {
+  if (state.wizardHistory.length === 0) return;
+  state.wizardStep = state.wizardHistory.pop();
+  renderWizard();
+}
+function wizardReset() {
+  state.wizardHistory = [];
+  state.wizardStep = 'start';
+  renderWizard();
+}
+
+/* ===========================================================
+   CALCULATORS
+   =========================================================== */
+function renderCalculators() {
+  const grid = document.getElementById('calcGrid');
+
+  // Build treaty options once
+  const treatyOptions = TREATIES.map(t =>
+    `<option value="${t.key}">${t.name} (${t.year})</option>`
+  ).join('');
+
+  grid.innerHTML = `
+    <!-- 1. Fixed Place PE Test -->
+    <div class="calc-card">
+      <div class="calc-card-head">
+        <div class="calc-card-num">Calculator 1 · Fixed Place PE</div>
+        <h3>Six-Condition Test</h3>
+        <div class="calc-desc">All six conditions must be satisfied (and the activity must NOT be preparatory/auxiliary) for a Fixed Place PE under Article 5(1)–(4).</div>
+      </div>
+      <div class="check-list" id="fpList">
+        <label data-idx="0"><input type="checkbox" /> <span>A place of business <strong>exists</strong> (premises, machinery, or any tangible location).</span></label>
+        <label data-idx="1"><input type="checkbox" /> <span>The place is <strong>geographically fixed</strong> (specific identifiable location).</span></label>
+        <label data-idx="2"><input type="checkbox" /> <span>The place has <strong>temporal permanence</strong> (typically &gt;6 months, but shorter for recurring activities).</span></label>
+        <label data-idx="3"><input type="checkbox" /> <span>The place is <strong>at the disposal</strong> of the enterprise (dedicated use or effective control).</span></label>
+        <label data-idx="4"><input type="checkbox" /> <span><strong>Business of the enterprise</strong> is carried on through the place.</span></label>
+        <label data-idx="5"><input type="checkbox" /> <span>The activity is <strong>NOT</strong> merely preparatory or auxiliary (Article 5(4) exclusions don't apply).</span></label>
+      </div>
+      <button class="btn" onclick="calcFixedPlace()" style="margin-top:12px; width:100%;">Run Fixed Place PE Test</button>
+      <div id="fpResult"></div>
+    </div>
+
+    <!-- 2. Construction PE Test -->
+    <div class="calc-card">
+      <div class="calc-card-head">
+        <div class="calc-card-num">Calculator 2 · Construction PE</div>
+        <h3>Project Duration Test</h3>
+        <div class="calc-desc">Multi-treaty support. Building site / construction / installation / assembly project becomes PE if it exceeds the treaty-specific time threshold.</div>
+      </div>
+      <div class="field full">
+        <label>Treaty</label>
+        <select id="cp_treaty">${treatyOptions}</select>
+      </div>
+      <div class="field full" style="margin-top:10px;">
+        <label>Duration of project</label>
+        <input type="number" id="cp_days" placeholder="e.g., 150" />
+      </div>
+      <div class="field full" style="margin-top:10px;">
+        <label>Duration unit</label>
+        <select id="cp_unit">
+          <option value="days">Days</option>
+          <option value="months">Months</option>
+        </select>
+      </div>
+      <div class="field full" style="margin-top:10px;">
+        <label>Contract splitting across related entities?</label>
+        <select id="cp_split">
+          <option value="no">No</option>
+          <option value="yes">Yes — apply MLI Art. 14 aggregation</option>
+        </select>
+      </div>
+      <button class="btn" onclick="calcConstruction()" style="margin-top:14px; width:100%;">Test for Construction PE</button>
+      <div id="cpResult"></div>
+    </div>
+
+    <!-- 3. Service PE Test -->
+    <div class="calc-card">
+      <div class="calc-card-head">
+        <div class="calc-card-num">Calculator 3 · Service PE</div>
+        <h3>Multi-Treaty Service PE</h3>
+        <div class="calc-desc">Furnishing of services through personnel in source country. Threshold varies by treaty. Post-Clifford Chance (2025): physical presence required.</div>
+      </div>
+      <div class="field full">
+        <label>Treaty</label>
+        <select id="sp_treaty">${treatyOptions}</select>
+      </div>
+      <div class="field full" style="margin-top:10px;">
+        <label>Aggregate days of <strong>physical presence</strong> <span class="hint">(exclude vacation, BD)</span></label>
+        <input type="number" id="sp_days" placeholder="e.g., 60" />
+      </div>
+      <div class="field full" style="margin-top:10px;">
+        <label>Services rendered to a related (associated) enterprise?</label>
+        <select id="sp_related">
+          <option value="no">No — third-party client</option>
+          <option value="yes">Yes — Article 9 associated enterprise</option>
+        </select>
+      </div>
+      <button class="btn" onclick="calcService()" style="margin-top:14px; width:100%;">Test for Service PE</button>
+      <div id="spResult"></div>
+    </div>
+
+    <!-- 4. Agency PE Test -->
+    <div class="calc-card">
+      <div class="calc-card-head">
+        <div class="calc-card-num">Calculator 4 · Agency PE</div>
+        <h3>Dependent Agent Test</h3>
+        <div class="calc-desc">Tests both pre-BEPS (habitual conclusion) and post-BEPS (principal role) standards. Includes MLI Article 12 commissionnaire test.</div>
+      </div>
+      <div class="check-list" id="agList">
+        <label data-idx="0"><input type="checkbox" /> <span>Agent <strong>habitually concludes contracts</strong> in the name of the enterprise.</span></label>
+        <label data-idx="1"><input type="checkbox" /> <span>OR agent plays the <strong>principal role leading to conclusion</strong> of contracts routinely concluded without material modification (Post-BEPS / MLI Art. 12).</span></label>
+        <label data-idx="2"><input type="checkbox" /> <span>Agent does NOT act in the <strong>ordinary course of its own independent business</strong>.</span></label>
+        <label data-idx="3"><input type="checkbox" /> <span>Agent acts <strong>exclusively or almost exclusively</strong> for the enterprise (closely related).</span></label>
+      </div>
+      <button class="btn" onclick="calcAgency()" style="margin-top:14px; width:100%;">Test for Agency PE</button>
+      <div id="agResult"></div>
+    </div>
+
+    <!-- 5. SEP Test (India) -->
+    <div class="calc-card">
+      <div class="calc-card-head">
+        <div class="calc-card-num">Calculator 5 · Significant Economic Presence</div>
+        <h3>India SEP Test (Section 9(1)(i) Expl 2A)</h3>
+        <div class="calc-desc">India's domestic-law digital PE concept. Either the revenue test OR the user test creates a deemed business connection.</div>
+      </div>
+      <div class="field full">
+        <label>Aggregate revenue from transactions with Indian residents/users in PY (₹)</label>
+        <input type="number" id="sep_revenue" placeholder="e.g., 50000000" />
+      </div>
+      <div class="field full" style="margin-top:10px;">
+        <label>Number of Indian users systematically and continuously solicited</label>
+        <input type="number" id="sep_users" placeholder="e.g., 250000" />
+      </div>
+      <button class="btn" onclick="calcSEP()" style="margin-top:14px; width:100%;">Test for SEP</button>
+      <div id="sepResult"></div>
+    </div>
+
+    <!-- 6. Anti-Fragmentation Test -->
+    <div class="calc-card">
+      <div class="calc-card-head">
+        <div class="calc-card-num">Calculator 6 · Anti-Fragmentation</div>
+        <h3>BEPS Action 7 / MLI Article 13 Test</h3>
+        <div class="calc-desc">Tests whether activities of closely related enterprises form a cohesive operating business that — aggregated — exceeds the preparatory/auxiliary exception.</div>
+      </div>
+      <div class="check-list" id="afList">
+        <label data-idx="0"><input type="checkbox" /> <span>Activities are carried on by the <strong>same or closely related enterprises</strong> (>50% common ownership).</span></label>
+        <label data-idx="1"><input type="checkbox" /> <span>Activities are conducted at the <strong>same place or related places</strong>.</span></label>
+        <label data-idx="2"><input type="checkbox" /> <span>Activities, when <strong>combined, form a cohesive operating business</strong>.</span></label>
+        <label data-idx="3"><input type="checkbox" /> <span>Combined activities are <strong>NOT</strong> wholly preparatory or auxiliary.</span></label>
+      </div>
+      <button class="btn" onclick="calcAntiFrag()" style="margin-top:14px; width:100%;">Test Anti-Fragmentation</button>
+      <div id="afResult"></div>
+    </div>
+  `;
+}
+
+function calcFixedPlace() {
+  const checks = document.querySelectorAll('#fpList input[type="checkbox"]');
+  const allMet = Array.from(checks).every(c => c.checked);
+  const failed = [];
+  const labels = [
+    'Place exists',
+    'Geographically fixed',
+    'Temporal permanence',
+    'At enterprise\'s disposal',
+    'Business carried on',
+    'Not preparatory/auxiliary'
+  ];
+  checks.forEach((c, i) => { if (!c.checked) failed.push(labels[i]); });
+
+  const verdict = allMet ? 'Fixed Place PE EXISTS' : 'No Fixed Place PE';
+  const cls = allMet ? 'warn' : 'good';
+  const detail = allMet
+    ? 'All six conditions satisfied. The source country can tax business profits attributable to this PE under Article 7. Where the entity is in India, also consider limited force-of-attraction to similar transactions outside the PE.'
+    : `Missing conditions: <strong>${failed.join(', ')}</strong>. Any single failure defeats Fixed Place PE. Note: even where Fixed Place PE doesn't exist, other PE types (Service, Agency) may still apply.`;
+
+  document.getElementById('fpResult').innerHTML = `
+    <div class="calc-result ${cls}">
+      <div class="r-label">Fixed Place PE Determination</div>
+      <div class="r-value" style="font-size:18px;">${verdict}</div>
+      <div class="r-detail">${detail}<br><br><strong>Reference:</strong> Article 5(1)–(2), 5(4) · Formula One World Championship (SC 2017) · UAE Exchange (SC 2020)</div>
+    </div>
+  `;
+}
+
+function calcConstruction() {
+  const treatyKey = document.getElementById('cp_treaty').value;
+  const treaty = TREATIES.find(t => t.key === treatyKey);
+  let days = +document.getElementById('cp_days').value || 0;
+  const unit = document.getElementById('cp_unit').value;
+  const split = document.getElementById('cp_split').value === 'yes';
+
+  // Convert to consistent unit using 30.44 days/month average (365.25/12)
+  // This avoids rounding errors when project is "12 months = 365 days" vs threshold "12 months"
+  const DAYS_PER_MONTH = 30.44;
+  let projectDays = unit === 'days' ? days : days * DAYS_PER_MONTH;
+  let thresholdDays = treaty.constructionUnit === 'days' ? treaty.construction : treaty.construction * DAYS_PER_MONTH;
+
+  const triggered = projectDays > thresholdDays;
+  const cls = triggered ? 'warn' : 'good';
+  const verdict = triggered ? 'Construction PE EXISTS' : 'No Construction PE';
+
+  let detail = `<strong>Treaty:</strong> ${treaty.name}<br>`;
+  detail += `<strong>Threshold:</strong> ${treaty.construction} ${treaty.constructionUnit} (= ${thresholdDays} days)<br>`;
+  detail += `<strong>Project duration:</strong> ${days} ${unit} (= ${projectDays} days)<br>`;
+  detail += `<strong>Result:</strong> ${triggered ? 'EXCEEDED' : 'within threshold'}<br><br>`;
+  if (split) {
+    detail += `<strong>⚠ MLI Article 14 alert:</strong> Contract splitting flagged. Aggregate days across all closely related entities; treat as single project. Even if individual contracts are under threshold, the combined project may create PE.`;
+  } else {
+    detail += `<strong>Reference:</strong> Article 5(3) · ${treaty.name} · ${treaty.notes || ''}`;
+  }
+
+  document.getElementById('cpResult').innerHTML = `
+    <div class="calc-result ${cls}">
+      <div class="r-label">Construction PE Determination</div>
+      <div class="r-value">${verdict}</div>
+      <div class="r-detail">${detail}</div>
+    </div>
+  `;
+}
+
+function calcService() {
+  const treatyKey = document.getElementById('sp_treaty').value;
+  const treaty = TREATIES.find(t => t.key === treatyKey);
+  const days = +document.getElementById('sp_days').value || 0;
+  const related = document.getElementById('sp_related').value === 'yes';
+
+  // Does this treaty have Service PE at all?
+  const threshold = related ? treaty.serviceRelated : treaty.serviceUnrelated;
+
+  if (threshold === null) {
+    document.getElementById('spResult').innerHTML = `
+      <div class="calc-result good">
+        <div class="r-label">Service PE Determination</div>
+        <div class="r-value" style="font-size:17px;">N/A — Treaty has no Service PE</div>
+        <div class="r-detail">The <strong>${treaty.name}</strong> does not contain a Service PE provision. Services in source country may still create a Fixed Place PE if there is a fixed place of business, or an Agency PE if a dependent agent is involved. Otherwise, business profits are taxable only in the residence country under Article 7.<br><br><strong>Reference:</strong> Article 5 of ${treaty.name}</div>
+      </div>
+    `;
+    return;
+  }
+
+  // For related party with 0 threshold, any presence triggers
+  // For unrelated, "more than threshold" (strict)
+  const triggered = (threshold === 0) ? days > 0 : days > threshold;
+  const cls = triggered ? 'warn' : 'good';
+  const verdict = triggered ? 'Service PE EXISTS' : 'No Service PE';
+
+  let detail = `<strong>Treaty:</strong> ${treaty.name}<br>`;
+  detail += `<strong>Party type:</strong> ${related ? 'Related (associated enterprise)' : 'Unrelated third party'}<br>`;
+  if (threshold === 0) {
+    detail += `<strong>Threshold:</strong> No day threshold — any physical presence to related party<br>`;
+  } else {
+    detail += `<strong>Threshold:</strong> More than ${threshold} days in any 12-month period<br>`;
+  }
+  detail += `<strong>Actual days:</strong> ${days}<br>`;
+  detail += `<strong>Result:</strong> ${triggered ? 'PE triggered' : 'Below threshold'}<br><br>`;
+  detail += `<strong>Per Clifford Chance (Delhi HC 2025):</strong> Only physical-presence days count. Exclude vacation, business development, and remote days.`;
+
+  document.getElementById('spResult').innerHTML = `
+    <div class="calc-result ${cls}">
+      <div class="r-label">Service PE Determination</div>
+      <div class="r-value">${verdict}</div>
+      <div class="r-detail">${detail}</div>
+    </div>
+  `;
+}
+
+function calcAgency() {
+  const checks = document.querySelectorAll('#agList input[type="checkbox"]');
+  const arr = Array.from(checks).map(c => c.checked);
+  // Logic:
+  // - Either Index 0 (habitual conclusion) OR Index 1 (principal role)
+  // - AND Index 2 (not independent ordinary course)
+  // - Index 3 (almost exclusive) reinforces if true
+  const concludesOrLeads = arr[0] || arr[1];
+  const notIndependent = arr[2];
+  const closeRelation = arr[3];
+
+  const triggered = concludesOrLeads && (notIndependent || closeRelation);
+  const cls = triggered ? 'warn' : 'good';
+  const verdict = triggered ? 'Agency PE EXISTS' : 'No Agency PE';
+
+  let detail = '';
+  if (triggered) {
+    detail = `Dependent agent test satisfied: agent ${arr[0] ? 'habitually concludes contracts' : 'plays principal role leading to conclusion'}, and `;
+    detail += notIndependent ? 'does not act in independent ordinary course of own business' : 'acts almost exclusively for the principal';
+    detail += `.<br><br>Source country can tax profits attributable to agency activities (typically 15-30% based on functions performed). Galileo (Delhi HC 2009) used 15%; Rolls Royce (Delhi HC 2011) used 35%.`;
+  } else {
+    if (!concludesOrLeads) {
+      detail = 'Agent does NOT habitually conclude contracts or play principal role. Mere solicitation, marketing, or referrals do not create Agency PE.';
+    } else {
+      detail = 'Agent is independent and acts in ordinary course of its own business (Article 5(6) safe harbour applies). No Agency PE.';
+    }
+  }
+  detail += `<br><br><strong>Reference:</strong> Article 5(5)–(6) · MLI Articles 12, 15 · Galileo (Delhi HC 2009) · eBay (Mum ITAT 2012)`;
+
+  document.getElementById('agResult').innerHTML = `
+    <div class="calc-result ${cls}">
+      <div class="r-label">Agency PE Determination</div>
+      <div class="r-value">${verdict}</div>
+      <div class="r-detail">${detail}</div>
+    </div>
+  `;
+}
+
+function calcSEP() {
+  const revenue = +document.getElementById('sep_revenue').value || 0;
+  const users = +document.getElementById('sep_users').value || 0;
+
+  const revenueThreshold = 20000000;  // ₹2 crore
+  const userThreshold = 300000;       // 3 lakh
+
+  const revenueTriggered = revenue >= revenueThreshold;
+  const userTriggered = users >= userThreshold;
+  const triggered = revenueTriggered || userTriggered;
+  const cls = triggered ? 'warn' : 'good';
+  const verdict = triggered ? 'SEP EXISTS — Deemed Business Connection' : 'No SEP';
+
+  let detail = `<strong>Revenue test (≥ ₹2 cr):</strong> ${revenue ? '₹' + revenue.toLocaleString('en-IN') : 'Not entered'} — ${revenueTriggered ? '✓ Triggered' : '✗ Not triggered'}<br>`;
+  detail += `<strong>User test (≥ 3 lakh):</strong> ${users.toLocaleString('en-IN')} users — ${userTriggered ? '✓ Triggered' : '✗ Not triggered'}<br><br>`;
+
+  if (triggered) {
+    detail += `<strong>Impact:</strong> Income attributable to the deemed business connection is taxable in India under Section 9(1)(i). <strong>But</strong>: India\'s treaties (Section 90(2)) override domestic provisions, so SEP may still be neutralised where the foreign enterprise has no treaty PE. <strong>Equalisation Levy (Section 165/165A)</strong> may apply separately.`;
+  } else {
+    detail += `<strong>No SEP impact.</strong> Foreign enterprise income remains taxable in India only if there is a treaty PE or other business connection.`;
+  }
+  detail += `<br><br><strong>Reference:</strong> Section 9(1)(i) Explanation 2A · Finance Act 2018, 2020 · Rule 11UD`;
+
+  document.getElementById('sepResult').innerHTML = `
+    <div class="calc-result ${cls}">
+      <div class="r-label">Significant Economic Presence</div>
+      <div class="r-value">${verdict}</div>
+      <div class="r-detail">${detail}</div>
+    </div>
+  `;
+}
+
+function calcAntiFrag() {
+  const checks = document.querySelectorAll('#afList input[type="checkbox"]');
+  const arr = Array.from(checks).map(c => c.checked);
+  const allMet = arr.every(x => x);
+  const cls = allMet ? 'warn' : 'good';
+  const verdict = allMet ? 'Anti-Fragmentation Triggered' : 'No Anti-Fragmentation';
+
+  let detail;
+  if (allMet) {
+    detail = `All four conditions met. The activities of the closely related enterprises must be <strong>aggregated</strong>, and the preparatory/auxiliary exception is denied. If the aggregated activities meet any PE test (Fixed Place, Service, etc.), a PE is created.<br><br><strong>Practical implication:</strong> Run the Fixed Place PE calculator with the aggregated activities, treating them as one enterprise.`;
+  } else {
+    detail = 'Anti-fragmentation rule does NOT apply. Each entity\'s preparatory/auxiliary activities can stand alone for Article 5(4) purposes.';
+  }
+  detail += `<br><br><strong>Reference:</strong> BEPS Action 7 · MLI Article 13 · OECD Commentary on Article 5(4.1)`;
+
+  document.getElementById('afResult').innerHTML = `
+    <div class="calc-result ${cls}">
+      <div class="r-label">Anti-Fragmentation Determination</div>
+      <div class="r-value">${verdict}</div>
+      <div class="r-detail">${detail}</div>
+    </div>
+  `;
+
+  // Bind check toggles
+  document.querySelectorAll('.check-list label').forEach(l => {
+    const cb = l.querySelector('input[type="checkbox"]');
+    if (cb) cb.onchange = () => l.classList.toggle('checked', cb.checked);
+  });
+}
+
+/* ===========================================================
+   PROFIT ATTRIBUTION
+   =========================================================== */
+function calcAttribution() {
+  const rev = +document.getElementById('pa_revenue').value || 0;
+  const direct = +document.getElementById('pa_direct').value || 0;
+  const ho = +document.getElementById('pa_ho').value || 0;
+  const int_ = +document.getElementById('pa_int').value || 0;
+  const royalty = +document.getElementById('pa_royalty').value || 0;
+  const services = +document.getElementById('pa_services').value || 0;
+  const foa = +document.getElementById('pa_foa').value || 0;
+
+  const profit = rev - direct - ho - int_ - royalty - services;
+  const withFOA = profit + foa;
+
+  document.getElementById('pa_total').textContent = '$' + profit.toLocaleString('en-US', {maximumFractionDigits:0});
+  document.getElementById('pa_total_foa').textContent = '$' + withFOA.toLocaleString('en-US', {maximumFractionDigits:0});
+}
+
+document.addEventListener('input', (e) => {
+  if (e.target.id && e.target.id.startsWith('pa_')) calcAttribution();
+});
+
+/* ===========================================================
+   TREATY ATLAS
+   =========================================================== */
+function renderAtlas() {
+  const tbody = document.querySelector('#atlasTable tbody');
+  tbody.innerHTML = TREATIES.map(t => {
+    const fmt = (val, unit) => val === null ? '<span style="color:var(--ink-3);">None</span>' : `${val} ${unit}`;
+    return `
+      <tr>
+        <td class="country">${t.name}</td>
+        <td class="year">${t.year}</td>
+        <td class="num">${t.construction} ${t.constructionUnit}</td>
+        <td class="num">${fmt(t.serviceUnrelated, 'days')}</td>
+        <td class="num">${t.serviceRelated === null ? '<span style="color:var(--ink-3);">None</span>' : (t.serviceRelated === 0 ? '<strong>Any</strong>' : t.serviceRelated + ' days')}</td>
+        <td style="font-size:11.5px;">${t.agencyNote}</td>
+        <td style="font-size:11.5px; color:var(--ink-2);">${t.notes}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/* ===========================================================
+   CASE LAW
+   =========================================================== */
+function renderCases() {
+  const c = document.getElementById('casesContent');
+  c.innerHTML = CASES.map(cs => `
+    <div class="case-card">
+      <div class="case-name">${cs.name}</div>
+      <div class="case-cite">${cs.cite}</div>
+      <div class="case-tags">${cs.tags.map(t => `<span class="tag ${t.includes('SC') || t.includes('HC') ? 'primary' : ''}">${t}</span>`).join('')}</div>
+      <div class="case-holding">${cs.holding}</div>
+    </div>
+  `).join('');
+}
+
+/* ===========================================================
+   GLOSSARY
+   =========================================================== */
+function renderGlossary() {
+  const g = document.getElementById('glossGrid');
+  g.innerHTML = GLOSSARY.map(([term, def]) => `
+    <div class="gloss-term">${term}</div>
+    <div class="gloss-def">${def}</div>
+  `).join('');
+}
+
+/* ===========================================================
+   FLASHCARDS
+   =========================================================== */
+const FLASHCARDS = [
+  { cat:'definitions', q:'Define Permanent Establishment in one sentence.',
+    a:'<strong>A fixed place of business through which the business of an enterprise is wholly or partly carried on</strong> — Article 5(1) of the OECD/UN Model. Five types: Fixed Place, Construction, Service, Agency, and (India) Significant Economic Presence.' },
+  { cat:'definitions', q:'What are the SIX conditions for a Fixed Place PE?',
+    a:'1. Place of business <strong>exists</strong>. 2. Place is <strong>geographically fixed</strong>. 3. Place has <strong>temporal permanence</strong> (~6 months). 4. Place is <strong>at the disposal</strong>. 5. <strong>Business is carried on</strong> through it. 6. Activity is <strong>NOT</strong> preparatory or auxiliary (Article 5(4)).' },
+  { cat:'definitions', q:'What is "at disposal" in the PE context?',
+    a:'The place must be <strong>at the disposal of the enterprise</strong> — meaning the enterprise has effective control or dedicated use. A customer\'s premises used for occasional visits is NOT at disposal; a dedicated office, even small or shared, can be.' },
+  { cat:'thresholds', q:'Construction PE threshold under OECD Model 2017?',
+    a:'<strong>12 months</strong>. Article 5(3) of OECD Model. The UN Model and most India treaties use shorter (6 months). India-US uses 120 days.' },
+  { cat:'thresholds', q:'Construction PE threshold under UN Model 2017?',
+    a:'<strong>6 months</strong>. Article 5(3) of UN Model. The UN Model is favoured by source countries (developing) and used as basis for many India treaties.' },
+  { cat:'thresholds', q:'Construction PE threshold under India-US DTAA?',
+    a:'<strong>120 days</strong> in any 12-month period. Article 5(2)(j) of India-US Treaty.' },
+  { cat:'thresholds', q:'Construction PE threshold under India-UK and India-Germany DTAAs?',
+    a:'<strong>6 months</strong>. Both treaties (India-UK 1993, India-Germany 1995) use the UN Model-style 6-month threshold.' },
+  { cat:'thresholds', q:'Construction PE threshold under India-Mauritius DTAA?',
+    a:'<strong>9 months</strong>. Article 5(2)(j) of India-Mauritius treaty (1982, amended 2016).' },
+  { cat:'thresholds', q:'Service PE threshold under India-US DTAA?',
+    a:'<strong>More than 90 days</strong> in any 12-month period for unrelated parties — Article 5(2)(l). For services to related (associated) enterprises: <strong>any presence</strong> triggers Service PE (no day threshold).' },
+  { cat:'thresholds', q:'Service PE under India-UK DTAA — related vs unrelated?',
+    a:'Unrelated: <strong>90 days</strong>. Related: <strong>30 days</strong>. Article 5(2)(k) of India-UK treaty.' },
+  { cat:'thresholds', q:'Does the OECD Model contain a Service PE?',
+    a:'<strong>No</strong> — the OECD Model 2017 does NOT include Service PE in the main treaty (only the Commentary discusses it). The UN Model 2017 DOES include Service PE in Article 5(3)(b) with a 183-day threshold.' },
+  { cat:'concepts', q:'What does "preparatory or auxiliary" mean (Article 5(4))?',
+    a:'Activities that are NOT core business — storage, display, purchase of goods, info collection, advertising, scientific research. These do NOT create PE even at a fixed place. Post-BEPS: must be preparatory/auxiliary <strong>in context of the enterprise\'s overall activity</strong>.' },
+  { cat:'concepts', q:'What is "anti-fragmentation"?',
+    a:'BEPS Action 7 / MLI Article 13 rule. Prevents enterprises from <strong>splitting cohesive operations</strong> across related entities to fit each fragment within the preparatory/auxiliary exception. Aggregate the activities to test.' },
+  { cat:'concepts', q:'What is "limited force of attraction" under Article 7?',
+    a:'India-style treaty provision. Once PE exists, source country can tax NOT ONLY PE profits but also <strong>same/similar transactions</strong> in source country outside the PE. Found in Article 7(1)(b)/(c) of India-US, India-UK, etc. The OECD Model rejects force of attraction.' },
+  { cat:'concepts', q:'What is "Significant Economic Presence" (SEP)?',
+    a:'India\'s domestic-law digital PE concept under <strong>Section 9(1)(i) Explanation 2A</strong>. Creates deemed business connection where: (i) revenue from India ≥ ₹2 crore, OR (ii) systematic soliciting of ≥ 3 lakh Indian users. NOT a treaty PE — but creates Indian tax liability subject to treaty override.' },
+  { cat:'concepts', q:'What is the "principal role" test for Agency PE (post-BEPS)?',
+    a:'MLI Article 12 broadened Agency PE to include agents who play the <strong>principal role leading to the conclusion of contracts</strong> that are routinely concluded without material modification — even if the agent doesn\'t formally sign. Closes commissionnaire loophole.' },
+  { cat:'concepts', q:'Why does a subsidiary NOT, by itself, create a PE of its parent?',
+    a:'Article 5(7) — a subsidiary is legally distinct from the parent. However, subsidiary premises can become a Fixed Place PE of parent if parent uses them for its own business (E-Funds, SC 2017; GE Energy Parts, Delhi HC 2019).' },
+  { cat:'cases', q:'Leading SC case on Fixed Place PE — Formula One Circuit?',
+    a:'<strong>Formula One World Championship Ltd v. CIT</strong> (2017) 394 ITR 80 (SC). Buddh International Circuit during Indian GP held to be Fixed Place PE. Even a temporary location can be "fixed" if permanence and disposal tests are met.' },
+  { cat:'cases', q:'Recent Delhi HC ruling rejecting "virtual" Service PE?',
+    a:'<strong>CIT v. Clifford Chance Pte Ltd</strong> (Dec 2025) — Delhi HC. Held that Service PE requires <strong>physical presence</strong> of personnel. Only service-rendering days count; exclude vacation, BD, remote days. Virtual delivery alone does NOT create Service PE.' },
+  { cat:'cases', q:'Leading case on BPO/captive subsidiary and PE?',
+    a:'<strong>ADIT v. E-Funds IT Solution Inc.</strong> (2017) 86 taxmann.com 240 (SC). Captive Indian subsidiary providing BPO/back-office services to US parent did NOT create Fixed Place or Agency PE for parent. Subsidiary remained independently functional.' },
+  { cat:'cases', q:'Morgan Stanley case — significance?',
+    a:'<strong>DIT v. Morgan Stanley & Co.</strong> (2007) 292 ITR 416 (SC). Where captive operations are remunerated at <strong>arm\'s length</strong> and bear their own risks, no further profit attribution is required even if Service PE technically exists. Foundational for BPO/ITES industry profit attribution.' },
+  { cat:'cases', q:'Galileo International — significance for Agency PE?',
+    a:'<strong>DIT v. Galileo International Inc.</strong> (2009) 180 Taxman 357 (Delhi HC). CRS booking system: Indian distributor was a dependent agent — Agency PE established. <strong>15% of revenue</strong> attributed to Indian operations. Leading attribution precedent.' },
+  { cat:'cases', q:'Hyundai Heavy Industries — offshore supply ruling?',
+    a:'<strong>CIT v. Hyundai Heavy Industries</strong> (2007) 291 ITR 482 (SC). Korean contractor on ONGC project: profits from offshore supply (title passing outside Indian waters) were NOT attributable to Indian PE, even though Construction PE existed for onshore portion.' },
+  { cat:'cases', q:'Liaison office cases — when does an LO become a PE?',
+    a:'<strong>UAE Exchange Centre</strong> (SC 2020): LO collecting payment instructions = preparatory/auxiliary = NO PE. <strong>Rolls Royce Plc</strong> (Delhi HC 2011): LO negotiating with customers exceeded preparatory/auxiliary = Fixed Place PE. Test: does the LO\'s activity rise above preparatory/auxiliary?' },
+  { cat:'sections', q:'Which section of IT Act governs head-office expense cap for Indian PE?',
+    a:'<strong>Section 44C</strong> — caps deduction of head-office expenses allocated to Indian PE at <strong>5% of adjusted total income</strong>.' },
+  { cat:'sections', q:'Which section provides presumptive tax for royalty/FTS connected to PE in India?',
+    a:'<strong>Section 44DA</strong> — royalty/FTS connected to PE taxed on presumptive basis. Combined with Section 90(2), determines net taxable amount.' },
+  { cat:'sections', q:'India\'s SEP rule citation?',
+    a:'<strong>Section 9(1)(i), Explanation 2A</strong> of the Income Tax Act, 1961 (inserted by Finance Act 2018, amended 2020). Thresholds: ₹2 crore revenue OR 3 lakh users.' },
+  { cat:'sections', q:'Indian Equalisation Levy citations?',
+    a:'<strong>Section 165</strong> — 6% levy on online advertisement payments to non-residents (still in force). <strong>Section 165A</strong> — 2% levy on e-commerce supply (abolished w.e.f. 1 August 2024).' },
+  { cat:'beps', q:'What is BEPS Action 7?',
+    a:'OECD\'s 2015 work on <strong>"Preventing the Artificial Avoidance of PE Status"</strong>. Tightened agency PE rules, anti-fragmentation, contract-splitting for construction. Implemented through the Multilateral Instrument (MLI).' },
+  { cat:'beps', q:'What is the MLI?',
+    a:'<strong>Multilateral Instrument</strong> (2016) — single multilateral treaty that modifies bilateral DTAAs simultaneously. India deposited its instrument in June 2019, applicable to ~93 of India\'s treaty partners.' },
+  { cat:'beps', q:'MLI Articles dealing with PE?',
+    a:'<strong>Article 12</strong> — commissionnaire / principal role test. <strong>Article 13</strong> — preparatory/auxiliary specific activity exceptions. <strong>Article 14</strong> — splitting of construction contracts. <strong>Article 15</strong> — definition of "closely related person."' },
+  { cat:'attribution', q:'What is the OECD "Authorised Approach" (AOA)?',
+    a:'Articles 7(2) approach — treat PE as <strong>separate, independent enterprise</strong> dealing at arm\'s length with the head office. Allows notional payments (interest, royalty, services) between HO and PE. India\'s treaties generally restrict this under Article 7(3).' },
+  { cat:'attribution', q:'How does India approach profit attribution differently from OECD AOA?',
+    a:'India follows a "functional and factual analysis" approach (CBDT Circular 6/2021). <strong>Notional payments between HO and PE are NOT deductible</strong> in India under most treaties\' Article 7(3) restrictions. Section 44C caps HO expenses at 5%.' },
+];
+
+const flashcardCategories = [
+  { key:'all', label:'All' },
+  { key:'definitions', label:'Definitions' },
+  { key:'thresholds', label:'Thresholds' },
+  { key:'concepts', label:'Concepts' },
+  { key:'cases', label:'Case Law' },
+  { key:'sections', label:'IT Act' },
+  { key:'beps', label:'BEPS/MLI' },
+  { key:'attribution', label:'Attribution' },
+];
+
+function getFilteredCards() {
+  if (state.flashcardCategory === 'all') return FLASHCARDS;
+  return FLASHCARDS.filter(c => c.cat === state.flashcardCategory);
+}
+
+function renderFlashcardCats() {
+  const c = document.getElementById('flashcardCats');
+  c.innerHTML = '';
+  flashcardCategories.forEach(cat => {
+    const b = document.createElement('button');
+    b.className = 'cat-btn' + (cat.key === state.flashcardCategory ? ' active' : '');
+    b.textContent = cat.label;
+    b.onclick = () => {
+      state.flashcardCategory = cat.key;
+      state.flashcardIndex = 0;
+      state.flashcardFlipped = false;
+      renderFlashcardCats();
+      renderFlashcard();
+    };
+    c.appendChild(b);
+  });
+}
+
+function renderFlashcard() {
+  const cards = getFilteredCards();
+  if (cards.length === 0) {
+    document.getElementById('flashcard').innerHTML = '<div class="fc-front">No cards in this category</div>';
+    return;
+  }
+  if (state.flashcardIndex >= cards.length) state.flashcardIndex = 0;
+  if (state.flashcardIndex < 0) state.flashcardIndex = cards.length - 1;
+
+  const card = cards[state.flashcardIndex];
+  const side = state.flashcardFlipped ? 'Answer' : 'Question';
+  const body = state.flashcardFlipped
+    ? `<div class="fc-back">${card.a}<span class="fc-hint">Tap to flip back · Right arrow for next</span></div>`
+    : `<div class="fc-front">${card.q}</div>`;
+
+  document.getElementById('flashcard').innerHTML = `
+    <div class="fc-side">${side}</div>
+    <div class="fc-meta">${state.flashcardIndex + 1} / ${cards.length}</div>
+    ${body}
+  `;
+  const pct = ((state.flashcardIndex + 1) / cards.length) * 100;
+  document.getElementById('fcProgress').textContent = `${state.flashcardIndex + 1} of ${cards.length}`;
+  document.getElementById('fcProgressFill').style.width = pct + '%';
+}
+
+function flipCard() { state.flashcardFlipped = !state.flashcardFlipped; renderFlashcard(); }
+function nextCard() { state.flashcardIndex++; state.flashcardFlipped = false; renderFlashcard(); }
+function prevCard() { state.flashcardIndex--; state.flashcardFlipped = false; renderFlashcard(); }
+
+document.addEventListener('keydown', (e) => {
+  if (state.currentTab !== 'study') return;
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft') prevCard();
+  if (e.key === ' ') { e.preventDefault(); flipCard(); }
+});
+
+/* Check toggle for all check-lists */
+document.addEventListener('change', (e) => {
+  if (e.target.type === 'checkbox') {
+    const label = e.target.closest('label');
+    if (label) label.classList.toggle('checked', e.target.checked);
+  }
+});
+
+/* ===========================================================
+   INIT
+   =========================================================== */
+renderWizard();
+renderCalculators();
+renderAtlas();
+renderCases();
+renderGlossary();
+renderFlashcardCats();
+renderFlashcard();
+</script>
+
+</body>
+</html>
